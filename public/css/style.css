@@ -1,0 +1,48 @@
+html{
+	height: 100%;
+}
+
+body {
+	font-family: 'Merriweather', serif;
+	text-align: center;
+	background-image: url("../img/background.jpg");
+	background-size: cover;
+	background-position: center;
+}
+
+h1 {
+	font-family: 'Beau Rivage', cursive;
+	color: darkblue;
+	font-size: 5.5rem;
+	margin: 2%;
+}
+
+.card{
+	margin: 10px auto;
+	width: 50%;
+	/*background-color: #bd8919;*/
+	background-color: #ffbf36;
+	cursor:  pointer;
+}
+
+.card-title{
+	font-weight: 600;
+}
+
+@media (max-width: 900px){
+	.card{
+		width: 80%;
+	}
+
+	body{
+		background-image: url("../img/background.jpg");
+		background-size: auto 100%;
+		background-repeat: no-repeat;
+		background-position: center;
+	}
+
+	h1 {
+		color: #ffbf36;
+	}
+
+}
