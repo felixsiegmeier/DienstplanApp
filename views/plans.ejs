@@ -1,0 +1,21 @@
+<%- include("header") -%>
+
+<h1>Alle Pläne</h1>
+<h2>Neuen Plan erstellen</h2>
+<form action="/plans" method="POST">
+	<div class="input-group mb-3">
+	  <input type="text" class="form-control" placeholder="Bezeichnung" aria-label="Bezeichnung" aria-describedby="basic-addon2" name="name">
+	  <div class="input-group-append">
+	    <button class="btn btn-success" type="submit">Erstellen</button>
+	  </div>
+	</div>
+</form>
+<br>
+<span class="dot"></span>
+<span class="dot"></span>
+<span class="dot"></span>
+<h2>Plan auswählen</h2>
+<p>Hier kommt eine Auswahl mit Datalist und Lösch-Button hin</p>
+
+
+<%- include("footer") -%>

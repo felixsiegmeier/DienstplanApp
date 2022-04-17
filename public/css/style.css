@@ -5,14 +5,13 @@ html{
 body {
 	font-family: 'Merriweather', serif;
 	text-align: center;
-	background-image: url("../img/background.jpg");
-	background-size: cover;
-	background-position: center;
+	padding-bottom: 3%;
+	background: rgb(241,241,241);
+	background: linear-gradient(90deg, rgba(241,241,241,1) 0%, rgba(147,147,147,1) 100%);
 }
 
 h1 {
 	font-family: 'Beau Rivage', cursive;
-	color: darkblue;
 	font-size: 5.5rem;
 	margin: 2%;
 }
@@ -20,29 +19,65 @@ h1 {
 .card{
 	margin: 10px auto;
 	width: 50%;
-	/*background-color: #bd8919;*/
-	background-color: #ffbf36;
+	background-color: rgb(210,232,221);
 	cursor:  pointer;
+}
+
+.card:hover{
+	background-color: #dbece3;
 }
 
 .card-title{
 	font-weight: 600;
 }
 
+.bi-trash3-fill{
+	color:  gray;
+	cursor:  pointer;
+}
+
+.bi-trash3-fill:hover{
+	color:  red;
+
+}
+
+.back-button{
+	font-size: 3rem;
+	position: fixed;
+	left: 20px;
+	top: 50px;
+	/*color:  #5bc0de;*/
+	color: grey;
+	cursor: pointer;
+}
+
+.back-button:hover{
+	color: #5cb85c;
+}
+
+.dot {
+  height: 25px;
+  width: 25px;
+  background-color: lightgrey;
+  border-radius: 50%;
+  display: inline-block;
+  margin-bottom: 30px;
+}
+
+form.doctors{
+	margin-right: 10%;
+	margin-left: 10%;
+}
+
+div.input-group{
+	width:  30%;
+	margin: auto;
+	padding-top: 20px;
+}
+
 @media (max-width: 900px){
 	.card{
 		width: 80%;
-	}
-
-	body{
-		background-image: url("../img/background.jpg");
-		background-size: auto 100%;
-		background-repeat: no-repeat;
-		background-position: center;
-	}
-
-	h1 {
-		color: #ffbf36;
 	}
 
 }

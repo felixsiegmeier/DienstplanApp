@@ -1,0 +1,81 @@
+<%- include("header") -%>
+<h1>Ärzte Verwalten</h1>
+<form class="doctors" method="POST" action="/doctors">
+	<table class=" table table-success table-bordered border-success">
+		<thead>
+			<tr>
+				<% doctorAttrs.forEach(attr => { %>
+					<th> <%= attr %> </th>
+				<% })%>
+				<th>Löschen</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% doctors.forEach(doctor => { %>
+				<tr>
+					<input type="hidden" name="id" value="<%= doctor._id%>">
+					
+					<td>
+						<input class="form-control" type="text" name="name" value="<%= doctor.name%>">
+					</td>
+					
+					<td>
+						<select class="form-select form-select-sm" name="clinic">
+							<% clinics.forEach(clinic => {%>
+								<%if (clinic == doctor.clinic){%>
+									<option value="<%= clinic %>" selected><%= clinic %></option>
+								<%}else{%>
+									<option value="<%= clinic %>"><%= clinic %></option>
+								<%}%>
+							<%})%>
+						</select>
+					</td>
+					
+					<td>
+						<input name="emergencyDepartment" class="form-check-input" type="checkbox" value="<%= doctor._id%>" <%if(doctor.emergencyDepartment){%>checked<%}%> >				
+					</td>
+					
+					<td>
+						<input name="house" class="form-check-input" type="checkbox" value="<%= doctor._id%>" <%if(doctor.house){%>checked<%}%>>				
+					</td>
+					
+					<td>
+						<input name="imc" class="form-check-input" type="checkbox" value="<%= doctor._id%>" value="<%= doctor._id%>" <%if(doctor.imc){%>checked<%}%> >				
+					</td>
+					
+					<td>
+						<input name="only12" class="form-check-input" type="checkbox" value="<%= doctor._id%>" <%if(doctor.only12){%>checked<%}%> >				
+					</td>
+					
+					<td>
+						<select class="form-select form-select-sm" name="maximumDutys">
+							<% [1,2,3,4,5,6,7].forEach(max => {%>
+								<%if (max == doctor.maximumDutys){%>
+									<option value="<%= max %>" selected><%= max %></option>
+								<%}else{%>
+									<option value="<%= max %>"><%= max %></option>
+								<%}%>
+							<%})%>
+						</select>
+					</td>
+					
+					<td>
+						<input name="emergencyDoctor" class="form-check-input" type="checkbox" value="<%= doctor._id%>" <%if(doctor.emergencyDoctor){%>checked<%}%> >				
+					</td>
+					
+					<td>
+						<input name="rescueHelicopter" class="form-check-input" type="checkbox" value="<%= doctor._id%>" <%if(doctor.rescueHelicopter){%>checked<%}%> >				
+					</td>
+					
+					<td>
+						<i class="bi bi-trash3-fill" value="<%= doctor._id%>"></i>
+					</td>
+				</tr>
+			<%})%>
+		</tbody>
+	</table>
+	<button class="btn btn-warning btn-new-doctor" type="button">Neuer Arzt</button>
+	<input class="btn btn-success" type="submit" value="Speichern">
+</form>
+
+<%- include("footer") -%>
