@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const express = require("express")
 const ejs = require("ejs")
 const schemas = require(__dirname+"/schemas.js")
+const https = require("https")
 
 app = express()
 app.use(bodyParser.urlencoded({extended: true}))
@@ -18,24 +19,24 @@ const Plan = mongoose.model("Plan", schemas.Plan)
 const doctorAttrs = ["Name", "Klinik", "NFA", "Haus", "IMC", "12 h", "Max", "NA", "RTH"]
 const clinics = ["Kardiologie", "Gastroenterologie", "Geriatrie", "Rhythmologie", "Ohne"]
 
-// main Page
+////////////////////////////////////////////// main Page //////////////////////////////////////////////
 app.get("/", (req, res) => {
 	res.render("index")
 })
 
-// overview of all plans
+////////////////////////////////////////////// overview of all plans //////////////////////////////////////////////
 app.get("/all", (req, res) => {
 	res.render("allplans")
 })
 
-// grid of a single plan
+////////////////////////////////////////////// grid of a single plan //////////////////////////////////////////////
 app.get("/plan/:id", (req, res) => {
 	const id = req.params.id
 	// insert function to lead propper plan from DB
 	res.render("plan", {plan: id})
 })
 
-// doctors-list for creation and editing doctors and their parameters
+////////////////////////////////////////////// doctors-list for creation and editing doctors and their parameters //////////////////////////////////////////////
 app.route("/doctors")
 	.get((req, res) => {
 		Doctor.find((err, doctors) => {
@@ -76,7 +77,6 @@ app.route("/doctors")
 		}
 	})
 	.delete((req, res) => {
-		console.log(req.query)
 		Doctor.deleteOne({_id: req.query.id}, (q) => {
 			res.send(200)
 		})
@@ -99,15 +99,126 @@ app.get("/doctors/new", (req, res) => {
 	})
 })
 
-// All about all plans - creation, selection
+////////////////////////////////////////////// All about all plans - creation, selection //////////////////////////////////////////////
+
+function holidays(year, month){
+	return new Promise((resolve, reject) =>{
+		const holidayList = []
+	https.get("https://feiertage-api.de/api/?jahr="+year+"&nur_land=MV", (res) =>{
+		res.on("data", (d) => {
+			const jsonFormat = JSON.parse(d)
+			const keys = Object.keys(jsonFormat)
+			keys.forEach(key => {
+				const arrayFormat = jsonFormat[key].datum.split("-").map(Number)
+				holidayList.push(arrayFormat)
+			})
+			const monthlyHolidays = []
+			holidayList.forEach(holiday => {
+				if (holiday[1] === month){
+					monthlyHolidays.push(holiday[2])
+				}
+			})
+			resolve(monthlyHolidays)
+		})
+	})
+	})
+}
+
+function getDaysInMonth(month, year) {
+  var date = new Date(year, month, 1);
+  var days = [];
+  while (date.getMonth() === month) {
+    days.push(new Date(date));
+    date.setDate(date.getDate() + 1);
+  }
+  return days;
+}
 
 app.get("/plans", (req, res) => {
-	res.render("plans")
+	Plan.find((err, finding)=> {
+		res.render("plans", {plans: finding})
+	})
+	
 })
 
 app.post("/plans", (req, res) => {
-	console.log("got a new plan, need to create the Plan and redirect to its page")
+	const months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+	const newPlan = new Plan({
+		name: req.body.name,
+		year: req.body.year,
+		month: (months.indexOf(req.body.month)+1)
+	})
+	const allDays = getDaysInMonth(newPlan.month-1, newPlan.year)
+
+	holidays(newPlan.year, newPlan.month)
+	.then((holidays) => {
+		allDays.forEach(day => {
+			const newDay = new Day({
+				date: day
+			})
+			// Sa, So
+			if([6,0].includes(day.getDay())){
+				newDay.noWorkingDay = true
+				newDay.pointValue += 1
+			}
+			// Fr
+			if(day.getDay() === 5){
+				newDay.pointValue += 1
+			}
+			// Holiday
+			if(holidays.includes(day.getDate())){
+				newDay.noWorkingDay = true
+				newDay.pointValue += 1
+			}
+			// 31.12.
+			if((newPlan.month === 12) & (day.getDate() === 31)){
+				newDay.pointValue += 1
+			}
+			// 30.04.
+			if((newPlan.month === 4) & (day.getDate() === 30)){
+				newDay.pointValue += 1
+			}
+			// Samstag
+			if(day.getDay() === 6){
+				newDay.pointValue += 1
+			}
+			// Folgetag ist Feiertag
+			if (holidays.includes(day.getDate()+1)){
+				newDay.pointValue += 1
+			}
+			// 3 is maximum
+			if (newDay.pointValue > 3){
+				newDay.pointValue = 3
+			}
+			newPlan.days.push(newDay)
+		})
+		newPlan.save(() => {
+			res.redirect("/plan/"+newPlan._id)
+		})
+	})
 })
+
+app.delete("/plans",(req, res) => {
+	Plan.deleteOne({_id: req.query.id}, (q) => {
+		res.send(200)
+	})
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 app.listen(3000, () => {
 	console.log("Server up and running")

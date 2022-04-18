@@ -3,8 +3,20 @@
 <h1>Alle Pläne</h1>
 <h2>Neuen Plan erstellen</h2>
 <form action="/plans" method="POST">
+	<select class="form-select new-plan-form-select" aria-label="Default select example" name="month">
+		<% const months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]%>
+		<% months.forEach(month => { %>
+			<option><%=month%></option>
+		<% }) %>
+	</select>
+	<select class="form-select new-plan-form-select" aria-label="Default select example" name="year">
+	  	<% const years = [2022, 2023, 2024, 2025, 2026]%>
+		<% years.forEach(year => { %>
+			<option><%=year%></option>
+		<% }) %>
+	</select>
 	<div class="input-group mb-3">
-	  <input type="text" class="form-control" placeholder="Bezeichnung" aria-label="Bezeichnung" aria-describedby="basic-addon2" name="name">
+	  <input type="text" class="form-control" placeholder="Bezeichnung" aria-label="Bezeichnung" aria-describedby="basic-addon2" name="name" required>
 	  <div class="input-group-append">
 	    <button class="btn btn-success" type="submit">Erstellen</button>
 	  </div>
@@ -14,8 +26,37 @@
 <span class="dot"></span>
 <span class="dot"></span>
 <span class="dot"></span>
-<h2>Plan auswählen</h2>
-<p>Hier kommt eine Auswahl mit Datalist und Lösch-Button hin</p>
+<h2>Vorhandenen Plan auswählen</h2>
+<input class="form-control plans-search" placeholder="Suche"></input>
+
+<table class="table plans-table">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Monat</th>
+			<th>Jahr</th>
+			<th>Löschen</th>
+		</tr>
+	</thead>
+	<tbody>
+		<%plans.forEach(plan => { %>
+			<tr value="<%= plan._id%>">
+				<td class="plans-td">
+					<%= plan.name%>
+				</td>
+				<td class="plans-td">
+					<%= months[plan.month-1]%>
+				</td>
+				<td class="plans-td">
+					<%= plan.year%>
+				</td>
+				<td>
+					<i class="bi bi-trash3-fill del-plan" value="<%= plan._id%>"></i>
+				</td>
+			</tr>
+		<% }) %>
+	</tbody>
+</table>
 
 
 <%- include("footer") -%>

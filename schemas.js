@@ -14,8 +14,12 @@ exports.Doctor = Doctor = new mongoose.Schema({
 
 exports.Day = Day = new mongoose.Schema({
 	date: Date,
-	weekday: Number,
-	pointValue: Number,
+	noWorkingDay: {
+		type: Boolean,
+		default: false},
+	pointValue: {
+		type: Number,
+		default: 1},
 	house: [String],
 	emergencyDepartment: [String],
 	imc: String,
@@ -24,6 +28,7 @@ exports.Day = Day = new mongoose.Schema({
 })
 
 exports.Plan = Plan = new mongoose.Schema({
+	name: String,
 	month: Number,
 	year: Number,
 	days: [Day]

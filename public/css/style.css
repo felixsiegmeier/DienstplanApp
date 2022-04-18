@@ -64,6 +64,35 @@ h1 {
   margin-bottom: 30px;
 }
 
+.new-plan-form-select{
+	display: inline-block;
+	text-align: center;
+	width:  200px;
+	margin-top: 10px;
+}
+
+.plans-search{
+	width: 30%;
+	display: inline-block;
+	margin-top: 10px;
+}
+
+.plans-table{
+	width:  60%;
+	margin:  auto;
+	margin-top: 20px;
+	cursor: pointer;
+}
+
+.plans-tr:hover{
+	border: 1pt solid black;
+	color: #5cb85c;
+}
+
+.plans-tr-hidden{
+	display: none;
+}
+
 form.doctors{
 	margin-right: 10%;
 	margin-left: 10%;
