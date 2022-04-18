@@ -58,7 +58,25 @@ $(".plans-search").on("keyup", () => {
 	})
 })
 
+$(".wishlist-search").on("keyup", () => {
+	const searchTerm = $(".wishlist-search").val().toLowerCase()
+	$(".wishlist-tr").each(function(){
+		const value = $(this).find("td").text().toLowerCase()
+		if(value.includes(searchTerm)){
+			$(this).removeClass("wishlist-tr-hidden")
+		}else{
+			$(this).addClass("wishlist-tr-hidden")
+		}
+	})
+})
+
 $(".plans-td").on("click", (e) => {
 	const id = $(e.currentTarget).parent().attr("value")
 	window.open("/plan/"+id, "_self")
 })
+
+$(".wishlist-td").on("click", (e) => {
+	const id = $(e.currentTarget).parent().attr("value")
+	window.open("/wish/"+id, "_self")
+})
+

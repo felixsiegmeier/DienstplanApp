@@ -77,6 +77,12 @@ h1 {
 	margin-top: 10px;
 }
 
+.wishlist-search{
+	width: 30%;
+	display: inline-block;
+	margin-top: 10px;
+}
+
 .plans-table{
 	width:  60%;
 	margin:  auto;
@@ -90,6 +96,22 @@ h1 {
 }
 
 .plans-tr-hidden{
+	display: none;
+}
+
+.wishlist-table{
+	width:  60%;
+	margin:  auto;
+	margin-top: 20px;
+	cursor: pointer;
+}
+
+.wishlist-tr:hover{
+	border: 1pt solid black;
+	color: #5cb85c;
+}
+
+.wishlist-tr-hidden{
 	display: none;
 }
 

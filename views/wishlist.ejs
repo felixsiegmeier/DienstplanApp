@@ -26,9 +26,9 @@
 <span class="dot"></span>
 <span class="dot"></span>
 <h2>Vorhandene Wunschliste zum Bearbeiten auswählen</h2>
-<input class="form-control plans-search" placeholder="Suche"></input>
+<input class="form-control wishlist-search" placeholder="Suche"></input>
 
-<table class="table plans-table">
+<table class="table wishlist-table">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -39,14 +39,14 @@
 	</thead>
 	<tbody>
 		<%wishList.forEach(wish => { %>
-			<tr class="plans-tr" value="<%= wish._id%>">
-				<td class="plans-td">
+			<tr class="wishlist-tr" value="<%= wish._id%>">
+				<td class="wishlist-td">
 					<%= wish.name%>
 				</td>
-				<td class="plans-td">
+				<td class="wishlist-td">
 					<%= months[wish.month-1]%>
 				</td>
-				<td class="plans-td">
+				<td class="wishlist-td">
 					<%= wish.year%>
 				</td>
 				<td>
