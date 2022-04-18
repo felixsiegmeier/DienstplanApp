@@ -1,8 +1,7 @@
 <%- include("header") -%>
-
-<h1>Alle Pläne</h1>
-<h2>Neuen Plan erstellen</h2>
-<form action="/plans" method="POST">
+<h1>Wünsche</h1>
+<h2>Neuen Wunschplan erstellen</h2>
+<form action="/wishlist" method="POST">
 	<select class="form-select new-plan-form-select" aria-label="Default select example" name="month">
 		<% const months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]%>
 		<% months.forEach(month => { %>
@@ -26,7 +25,7 @@
 <span class="dot"></span>
 <span class="dot"></span>
 <span class="dot"></span>
-<h2>Vorhandenen Plan auswählen</h2>
+<h2>Vorhandene Wunschliste zum Bearbeiten auswählen</h2>
 <input class="form-control plans-search" placeholder="Suche"></input>
 
 <table class="table plans-table">
@@ -39,24 +38,25 @@
 		</tr>
 	</thead>
 	<tbody>
-		<%plans.forEach(plan => { %>
-			<tr class="plans-tr" value="<%= plan._id%>">
+		<%wishList.forEach(wish => { %>
+			<tr class="plans-tr" value="<%= wish._id%>">
 				<td class="plans-td">
-					<%= plan.name%>
+					<%= wish.name%>
 				</td>
 				<td class="plans-td">
-					<%= months[plan.month-1]%>
+					<%= months[wish.month-1]%>
 				</td>
 				<td class="plans-td">
-					<%= plan.year%>
+					<%= wish.year%>
 				</td>
 				<td>
-					<i class="bi bi-trash3-fill del-plan" value="<%= plan._id%>"></i>
+					<i class="bi bi-trash3-fill del-wish" value="<%= wish._id%>"></i>
 				</td>
 			</tr>
 		<% }) %>
 	</tbody>
 </table>
+
 
 
 <%- include("footer") -%>

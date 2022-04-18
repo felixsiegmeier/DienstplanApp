@@ -29,6 +29,17 @@ $(".del-plan").on("click", (e) => {
 	})
 })
 
+$(".del-wish").on("click", (e) => {
+	const id = $(e.currentTarget).attr("value")
+	$.ajax({
+		url: "/wishlist?id="+id,
+		type: "DELETE",
+		success: () => {
+			window.open("/wishlist", "_self")
+		}
+	})
+})
+
 
 $(".bi-house-fill").on("click", () => {
 	console.log("clicked")

@@ -15,6 +15,7 @@ mongoose.connect("mongodb://localhost:27017/dienstplanDB")
 const Doctor = mongoose.model("Doctor", schemas.Doctor)
 const Day = mongoose.model("Day", schemas.Day)
 const Plan = mongoose.model("Plan", schemas.Plan)
+const WishList = mongoose.model("WishList", schemas.WishList)
 
 const doctorAttrs = ["Name", "Klinik", "NFA", "Haus", "IMC", "12 h", "Max", "NA", "RTH"]
 const clinics = ["Kardiologie", "Gastroenterologie", "Geriatrie", "Rhythmologie", "Ohne"]
@@ -78,7 +79,7 @@ app.route("/doctors")
 	})
 	.delete((req, res) => {
 		Doctor.deleteOne({_id: req.query.id}, (q) => {
-			res.send(200)
+			res.sendStatus(200)
 		})
 	})
 
@@ -200,15 +201,38 @@ app.post("/plans", (req, res) => {
 
 app.delete("/plans",(req, res) => {
 	Plan.deleteOne({_id: req.query.id}, (q) => {
-		res.send(200)
+		res.sendStatus(200)
 	})
 })
 
 
+////////////////////////////////////////////// WishList //////////////////////////////////////////////
 
 
+app.route("/wishlist")
+.get((req, res) => {
+	WishList.find((err, finding)=> {
+		res.render("wishlist", {wishList: finding})
+	})
+})
+.post((req, res) => {
+	const months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+	const wishList = new WishList({
+		name: req.body.name,
+		year: req.body.year,
+		month: (months.indexOf(req.body.month)+1)
+	})
+	wishList.save(() => {
+		res.redirect("/wish/:"+wishList._id)
+	})
+})
+.delete((req, res) => {
+		WishList.deleteOne({_id: req.query.id}, (q) => {
+			res.sendStatus(200)
+		})
+	})
 
-
+////////////////////////////////////////////// Wish //////////////////////////////////////////////
 
 
 

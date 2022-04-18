@@ -27,20 +27,23 @@ exports.Day = Day = new mongoose.Schema({
 	rescueHelicopter: String,
 })
 
-exports.Plan = Plan = new mongoose.Schema({
-	name: String,
-	month: Number,
-	year: Number,
-	days: [Day]
-})
-
 exports.Wish = Wish = new mongoose.Schema({
-	doctor: String,
+	doctorId: String,
 	dutyWish: [Date],
 	noDutyWish: [Date]
 })
 
-exports.Wishes = Wishes = new mongoose.Schema({
+exports.WishList = WishList = new mongoose.Schema({
 	name: String,
+	month: Number,
+	year: Number,
 	wishes: [Wish]
+})
+
+exports.Plan = Plan = new mongoose.Schema({
+	name: String,
+	month: Number,
+	year: Number,
+	wishListId: String,
+	days: [Day]
 })
