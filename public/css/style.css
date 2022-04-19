@@ -115,6 +115,46 @@ h1 {
 	display: none;
 }
 
+.wish-table{
+	width:  60%;
+	margin:  auto;
+	margin-top: 20px;
+}
+
+.wish-normal{
+	background-color: antiquewhite;
+}
+
+.wish-no-duty-wish{
+	background-color: indianred;
+}
+
+.wish-duty-wish{
+	background-color: lightseagreen;
+}
+
+.wish{
+	width: 25px;
+	height: 25px;
+	color: transparent;
+	cursor: pointer;
+	border-radius: 4px;
+	margin: auto;
+}
+
+.wish:hover{
+	color: black;
+	border: gray solid 3px;
+}
+
+.grid-td{
+	padding: 1px !important;
+}
+
+.grid-no-working-day{
+	background-color: #bdd0c6 !important;
+}
+
 form.doctors{
 	margin-right: 10%;
 	margin-left: 10%;
@@ -131,4 +171,8 @@ div.input-group{
 		width: 80%;
 	}
 
+}
+
+.btn-save-wish{
+	margin-top: 20px;
 }

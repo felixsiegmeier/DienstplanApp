@@ -16,9 +16,64 @@ const Doctor = mongoose.model("Doctor", schemas.Doctor)
 const Day = mongoose.model("Day", schemas.Day)
 const Plan = mongoose.model("Plan", schemas.Plan)
 const WishList = mongoose.model("WishList", schemas.WishList)
+const Wish = mongoose.model("Wish", schemas.Wish)
 
 const doctorAttrs = ["Name", "Klinik", "NFA", "Haus", "IMC", "12 h", "Max", "NA", "RTH"]
 const clinics = ["Kardiologie", "Gastroenterologie", "Geriatrie", "Rhythmologie", "Ohne"]
+
+
+////////////////////////////////////////////// general functions //////////////////////////////////////////////
+
+function getDaysInMonth(month, year) {
+  var date = new Date(year, month-1, 1);
+  var days = [];
+  while (date.getMonth() === month-1) {
+    days.push(new Date(date));
+    date.setDate(date.getDate() + 1);
+  }
+  return days;
+}
+
+function holidays(year, month){
+	return new Promise((resolve, reject) =>{
+		const holidayList = []
+	https.get("https://feiertage-api.de/api/?jahr="+year+"&nur_land=MV", (res) =>{
+		res.on("data", (d) => {
+			const jsonFormat = JSON.parse(d)
+			const keys = Object.keys(jsonFormat)
+			keys.forEach(key => {
+				const arrayFormat = jsonFormat[key].datum.split("-").map(Number)
+				holidayList.push(arrayFormat)
+			})
+			const monthlyHolidays = []
+			holidayList.forEach(holiday => {
+				if (holiday[1] === month){
+					monthlyHolidays.push(holiday[2])
+				}
+			})
+			resolve(monthlyHolidays)
+		})
+	})
+	})
+}
+
+function freeDaysOfMonth(year, month){
+	return new Promise((resolve, reject) => {
+		const freeDays = []
+		const allDays = getDaysInMonth(month, year)
+		holidays(year, month)
+		.then((holidays) => {
+			holidays.map((day) => freeDays.push(day))
+			allDays.forEach(day => {
+				if ((day.getDay() === 6) || (day.getDay() === 0)){
+					freeDays.push(day.getDate())
+				}
+			})
+			resolve(freeDays)
+		})
+	})
+	
+}
 
 ////////////////////////////////////////////// main Page //////////////////////////////////////////////
 app.get("/", (req, res) => {
@@ -102,38 +157,6 @@ app.get("/doctors/new", (req, res) => {
 
 ////////////////////////////////////////////// All about all plans - creation, selection //////////////////////////////////////////////
 
-function holidays(year, month){
-	return new Promise((resolve, reject) =>{
-		const holidayList = []
-	https.get("https://feiertage-api.de/api/?jahr="+year+"&nur_land=MV", (res) =>{
-		res.on("data", (d) => {
-			const jsonFormat = JSON.parse(d)
-			const keys = Object.keys(jsonFormat)
-			keys.forEach(key => {
-				const arrayFormat = jsonFormat[key].datum.split("-").map(Number)
-				holidayList.push(arrayFormat)
-			})
-			const monthlyHolidays = []
-			holidayList.forEach(holiday => {
-				if (holiday[1] === month){
-					monthlyHolidays.push(holiday[2])
-				}
-			})
-			resolve(monthlyHolidays)
-		})
-	})
-	})
-}
-
-function getDaysInMonth(month, year) {
-  var date = new Date(year, month, 1);
-  var days = [];
-  while (date.getMonth() === month) {
-    days.push(new Date(date));
-    date.setDate(date.getDate() + 1);
-  }
-  return days;
-}
 
 app.get("/plans", (req, res) => {
 	Plan.find((err, finding)=> {
@@ -149,7 +172,7 @@ app.post("/plans", (req, res) => {
 		year: req.body.year,
 		month: (months.indexOf(req.body.month)+1)
 	})
-	const allDays = getDaysInMonth(newPlan.month-1, newPlan.year)
+	const allDays = getDaysInMonth(newPlan.month, newPlan.year)
 
 	holidays(newPlan.year, newPlan.month)
 	.then((holidays) => {
@@ -223,7 +246,7 @@ app.route("/wishlist")
 		month: (months.indexOf(req.body.month)+1)
 	})
 	wishList.save(() => {
-		res.redirect("/wish/:"+wishList._id)
+		res.redirect("/wish?id="+wishList._id)
 	})
 })
 .delete((req, res) => {
@@ -235,8 +258,37 @@ app.route("/wishlist")
 ////////////////////////////////////////////// Wish //////////////////////////////////////////////
 
 
-
-
+app.get("/wish",(req, res) => {
+	WishList.findOne({_id: req.query.id}, (err, wishList) => {
+		if (wishList){
+			console.log(wishList)
+			const wishes = wishList.wishes
+			const doctorsWithWishes = wishes.map((wish) => wish.doctorId)
+			Doctor.find((err, doctors) => {
+				const monthLength = getDaysInMonth(wishList.month, wishList.year).length
+				doctors.forEach(doctor => {
+					if(!doctorsWithWishes.includes(String(doctor._id))){
+						const wish = new Wish({
+							doctorId: doctor._id,
+							doctorName: doctor.name
+						})
+						wishList.wishes.push(wish)
+					}
+				})
+			WishList.updateOne({_id: req.query.id}, wishList, (err) => {
+				if (!err){
+					freeDaysOfMonth(wishList.year, wishList.month)
+					.then((freeDays) => {
+						res.render("wish", {wishList: wishList, monthLength: monthLength, freeDays: freeDays})
+					})
+					
+				}
+			})
+				
+			})
+		}
+	})
+})
 
 
 

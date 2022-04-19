@@ -72,11 +72,67 @@ $(".wishlist-search").on("keyup", () => {
 
 $(".plans-td").on("click", (e) => {
 	const id = $(e.currentTarget).parent().attr("value")
-	window.open("/plan/"+id, "_self")
+	window.open("/plan?id="+id, "_self")
 })
 
 $(".wishlist-td").on("click", (e) => {
 	const id = $(e.currentTarget).parent().attr("value")
-	window.open("/wish/"+id, "_self")
+	window.open("/wish?id="+id, "_self")
 })
+
+$(".wish").on("click", (e) => {
+	const div = $(e.currentTarget)
+	switch (div.attr("value")){
+		case "0":
+			div.addClass("wish-no-duty-wish")
+			div.removeClass("wish-normal")
+			div.attr("value", "2")
+			break
+		case "2":
+			div.addClass("wish-duty-wish")
+			div.removeClass("wish-no-duty-wish")
+			div.attr("value", "1")
+			break
+		case "1":
+			div.addClass("wish-normal")
+			div.removeClass("wish-duty-wish")
+			div.attr("value", "0")
+			break
+	}
+})
+
+
+$(".btn-save-wish").on("click", () => {
+	const wishMatrix = {}
+	$(".wish").each(function(){
+		const doctorId = $(this).attr("data-doctor-id")
+		const date = $(this).attr("data-date")
+		const value = $(this).attr("value")
+		
+		if(!wishMatrix[doctorId]){
+			wishMatrix[doctorId] = {}
+		}
+		if(!wishMatrix[doctorId].dutyWish){
+			wishMatrix[doctorId].dutyWish = []
+		}
+		if(!wishMatrix[doctorId].noDutyWish){
+			wishMatrix[doctorId].noDutyWish = []
+		}
+
+		if(value === "1"){
+			wishMatrix[doctorId].dutyWish.push(Number(date))
+		}
+		if(value === "2"){
+			wishMatrix[doctorId].noDutyWish.push(Number(date))
+		}
+	})
+	console.log(wishMatrix)
+})
+
+
+
+
+
+
+
 

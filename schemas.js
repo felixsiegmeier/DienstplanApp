@@ -29,6 +29,7 @@ exports.Day = Day = new mongoose.Schema({
 
 exports.Wish = Wish = new mongoose.Schema({
 	doctorId: String,
+	doctorName: String,
 	dutyWish: [Date],
 	noDutyWish: [Date]
 })
