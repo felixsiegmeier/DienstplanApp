@@ -20,11 +20,12 @@ const Wish = mongoose.model("Wish", schemas.Wish)
 
 const doctorAttrs = ["Name", "Klinik", "NFA", "Haus", "IMC", "12 h", "Max", "NA", "RTH"]
 const clinics = ["Kardiologie", "Gastroenterologie", "Geriatrie", "Rhythmologie", "Ohne"]
+const months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
 
 
 ////////////////////////////////////////////// general functions //////////////////////////////////////////////
 
-function getDaysInMonth(month, year) {
+function getDaysInMonth(month, year) { // returns an Array of all Days (as Date()-Object) of the month (cave: not month-index!) in year
   var date = new Date(year, month-1, 1);
   var days = [];
   while (date.getMonth() === month-1) {
@@ -34,7 +35,7 @@ function getDaysInMonth(month, year) {
   return days;
 }
 
-function holidays(year, month){
+function holidays(year, month){ // returns a Promise, resolving an Array of all holidays in germany, MV (as Number) of the month (cave: not month-index!) in year
 	return new Promise((resolve, reject) =>{
 		const holidayList = []
 	https.get("https://feiertage-api.de/api/?jahr="+year+"&nur_land=MV", (res) =>{
@@ -57,7 +58,7 @@ function holidays(year, month){
 	})
 }
 
-function freeDaysOfMonth(year, month){
+function freeDaysOfMonth(year, month){ // returns a Promise, resolving an Array of all free Days = holidays, satturday, sunday of month (not month-index) in year
 	return new Promise((resolve, reject) => {
 		const freeDays = []
 		const allDays = getDaysInMonth(month, year)
@@ -88,7 +89,7 @@ app.get("/all", (req, res) => {
 ////////////////////////////////////////////// grid of a single plan //////////////////////////////////////////////
 app.get("/plan/:id", (req, res) => {
 	const id = req.params.id
-	// insert function to lead propper plan from DB
+	//CODE
 	res.render("plan", {plan: id})
 })
 
@@ -106,7 +107,7 @@ app.route("/doctors")
 		})
 		
 	})
-	.post((req, res) => {
+	.post((req, res) => { //Save doctors list to DB
 		const data = req.body
 		for (var i = 0; i < data.id.length; i++){
 			doctor = {
@@ -132,13 +133,14 @@ app.route("/doctors")
 			})
 		}
 	})
+
 	.delete((req, res) => {
 		Doctor.deleteOne({_id: req.query.id}, (q) => {
 			res.sendStatus(200)
 		})
 	})
 
-app.get("/doctors/new", (req, res) => {
+app.get("/doctors/new", (req, res) => { // Request to create a new "blank" doctor and refresh page to include it in the table (since i don't know a better way to achieve this)
 	const doctor = new Doctor({
 		name: "",
 		clinic: "Ohne",
@@ -165,8 +167,7 @@ app.get("/plans", (req, res) => {
 	
 })
 
-app.post("/plans", (req, res) => {
-	const months = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
+app.post("/plans", (req, res) => { /creates a new Plan in DB and redirects to it's page
 	const newPlan = new Plan({
 		name: req.body.name,
 		year: req.body.year,
@@ -229,7 +230,7 @@ app.delete("/plans",(req, res) => {
 })
 
 
-////////////////////////////////////////////// WishList //////////////////////////////////////////////
+////////////////////////////////////////////// WishList = Overview of all Wishes //////////////////////////////////////////////
 
 
 app.route("/wishlist")
@@ -291,10 +292,7 @@ app.get("/wish",(req, res) => {
 })
 
 
-
-
-
-
+////////////////////////////////////////////// Server call //////////////////////////////////////////////
 
 app.listen(3000, () => {
 	console.log("Server up and running")
