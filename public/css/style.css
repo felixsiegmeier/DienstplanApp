@@ -1,3 +1,5 @@
+/* Global TAGS */
+
 html{
 	height: 100%;
 }
@@ -16,30 +18,7 @@ h1 {
 	margin: 2%;
 }
 
-.card{
-	margin: 10px auto;
-	width: 50%;
-	background-color: rgb(210,232,221);
-	cursor:  pointer;
-}
-
-.card:hover{
-	background-color: #dbece3;
-}
-
-.card-title{
-	font-weight: 600;
-}
-
-.bi-trash3-fill{
-	color:  gray;
-	cursor:  pointer;
-}
-
-.bi-trash3-fill:hover{
-	color:  red;
-
-}
+/* Header / Footer */
 
 .back-button{
 	font-size: 3rem;
@@ -55,7 +34,10 @@ h1 {
 	color: #5cb85c;
 }
 
-.dot {
+/* Global styling-elements */
+
+}
+.dot { /* Separator */
   height: 25px;
   width: 25px;
   background-color: lightgrey;
@@ -63,6 +45,34 @@ h1 {
   display: inline-block;
   margin-bottom: 30px;
 }
+
+
+/* Index Page */
+
+.card{
+	margin: 10px auto;
+	width: 50%;
+	background-color: rgb(210,232,221);
+	cursor:  pointer;
+}
+
+.card:hover{
+	background-color: #dbece3;
+}
+
+.card-title{
+	font-weight: 600;
+}
+
+/* Doctors Page */
+
+.bi-trash3-fill{
+	color:  gray;
+	cursor:  pointer;
+}
+
+.bi-trash3-fill:hover{
+	color:  red;
 
 .new-plan-form-select{
 	display: inline-block;
@@ -77,6 +87,14 @@ h1 {
 	margin-top: 10px;
 }
 
+@media (max-width: 900px){
+	.card{
+		width: 80%;
+	}
+}
+
+/* Wishlist Page */
+	
 .wishlist-search{
 	width: 30%;
 	display: inline-block;
@@ -115,6 +133,8 @@ h1 {
 	display: none;
 }
 
+/* Wish Page */
+	
 .wish-table{
 	width:  60%;
 	margin:  auto;
@@ -164,13 +184,6 @@ div.input-group{
 	width:  30%;
 	margin: auto;
 	padding-top: 20px;
-}
-
-@media (max-width: 900px){
-	.card{
-		width: 80%;
-	}
-
 }
 
 .btn-save-wish{
