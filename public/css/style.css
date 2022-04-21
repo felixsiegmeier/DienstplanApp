@@ -79,7 +79,10 @@ h1 {
 
 /* Doctors Page */
 
-
+form.doctors{
+	margin-right: 10%;
+	margin-left: 10%;
+}
 
 /* Plans Page */	
 
@@ -176,11 +179,6 @@ h1 {
 
 .grid-no-working-day{
 	background-color: #bdd0c6 !important;
-}
-
-form.doctors{
-	margin-right: 10%;
-	margin-left: 10%;
 }
 
 div.input-group{
