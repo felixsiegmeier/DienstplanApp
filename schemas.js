@@ -12,6 +12,10 @@ exports.Doctor = Doctor = new mongoose.Schema({
 	maximumDutys: Number
 })
 
+Clinic = new mongoose.Schema({
+	counter: Number
+})
+
 exports.Day = Day = new mongoose.Schema({
 	date: Date,
 	noWorkingDay: {
@@ -25,6 +29,7 @@ exports.Day = Day = new mongoose.Schema({
 	imc: String,
 	emergencyDoctor: String,
 	rescueHelicopter: String,
+	clinics = {Clinic}
 })
 
 exports.Wish = Wish = new mongoose.Schema({
