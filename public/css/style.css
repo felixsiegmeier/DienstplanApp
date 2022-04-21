@@ -18,7 +18,7 @@ h1 {
 	margin: 2%;
 }
 
-/* Header / Footer */
+/* Header / Footer / global used styles */
 
 .back-button{
 	font-size: 3rem;
@@ -46,6 +46,13 @@ h1 {
   margin-bottom: 30px;
 }
 
+.bi-trash3-fill{ /* Delete-Button for plans, wishlists and doctors */
+	color:  gray;
+	cursor:  pointer;
+}
+
+.bi-trash3-fill:hover{
+	color:  red;
 
 /* Index Page */
 
@@ -72,13 +79,7 @@ h1 {
 
 /* Doctors Page */
 
-.bi-trash3-fill{
-	color:  gray;
-	cursor:  pointer;
-}
 
-.bi-trash3-fill:hover{
-	color:  red;
 
 /* Plans Page */	
 
