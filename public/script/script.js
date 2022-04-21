@@ -1,12 +1,15 @@
+// Redirect to corresponding page
 $(".card").on("click", (e) => {
 	name = $(e.currentTarget).attr("name");
 	window.open("/"+name, "_self");
 })
 
+// Leads to a get-request in app.js, which creates a new empty "doctor" and redirects to /doctors to reload the page
 $(".btn-new-doctor").on("click", () => {
 	window.open("/doctors/new", "_self");
 })
 
+// Deletes the corresponding doctor, after success redirects to /doctors to refresh page
 $(".del-doctor").on("click", (e) => {
 	const id = $(e.currentTarget).attr("value")
 	$.ajax({
@@ -18,6 +21,7 @@ $(".del-doctor").on("click", (e) => {
 	})
 })
 
+// Deletes the corresponding plan, after success redirects to /plans to refresh page
 $(".del-plan").on("click", (e) => {
 	const id = $(e.currentTarget).attr("value")
 	$.ajax({
@@ -29,6 +33,7 @@ $(".del-plan").on("click", (e) => {
 	})
 })
 
+// Deletes the corresponding wishlist, after success redirects to /wishlist to refresh page
 $(".del-wish").on("click", (e) => {
 	const id = $(e.currentTarget).attr("value")
 	$.ajax({
@@ -40,12 +45,13 @@ $(".del-wish").on("click", (e) => {
 	})
 })
 
-
+// Static Home-Button for all Pages
 $(".bi-house-fill").on("click", () => {
 	console.log("clicked")
 	window.open("/", "_self")
 })
 
+// Dynamic sear for plans table
 $(".plans-search").on("keyup", () => {
 	const searchTerm = $(".plans-search").val().toLowerCase()
 	$(".plans-tr").each(function(){
@@ -58,6 +64,7 @@ $(".plans-search").on("keyup", () => {
 	})
 })
 
+// dynamic search for wishlist
 $(".wishlist-search").on("keyup", () => {
 	const searchTerm = $(".wishlist-search").val().toLowerCase()
 	$(".wishlist-tr").each(function(){
@@ -70,16 +77,19 @@ $(".wishlist-search").on("keyup", () => {
 	})
 })
 
+// Redirection for Plan in Plans table
 $(".plans-td").on("click", (e) => {
 	const id = $(e.currentTarget).parent().attr("value")
 	window.open("/plan?id="+id, "_self")
 })
 
+// Redirection for Wish in Wishlist table
 $(".wishlist-td").on("click", (e) => {
 	const id = $(e.currentTarget).parent().attr("value")
 	window.open("/wish?id="+id, "_self")
 })
 
+// color- and value-change when clicking on a wish-field. (0 = normal, 1 = duty wish, 2 = no duty wish)
 $(".wish").on("click", (e) => {
 	const div = $(e.currentTarget)
 	switch (div.attr("value")){
@@ -101,7 +111,8 @@ $(".wish").on("click", (e) => {
 	}
 })
 
-
+// saves the entire wish-matrix
+// currently only creating a json-string. This must be sent to the app/database
 $(".btn-save-wish").on("click", () => {
 	const wishMatrix = {}
 	$(".wish").each(function(){
