@@ -64,6 +64,12 @@ h1 {
 	font-weight: 600;
 }
 
+@media (max-width: 900px){
+	.card{
+		width: 80%;
+	}
+}
+
 /* Doctors Page */
 
 .bi-trash3-fill{
@@ -73,6 +79,8 @@ h1 {
 
 .bi-trash3-fill:hover{
 	color:  red;
+
+/* Plans Page */	
 
 .new-plan-form-select{
 	display: inline-block;
@@ -86,21 +94,7 @@ h1 {
 	display: inline-block;
 	margin-top: 10px;
 }
-
-@media (max-width: 900px){
-	.card{
-		width: 80%;
-	}
-}
-
-/* Wishlist Page */
 	
-.wishlist-search{
-	width: 30%;
-	display: inline-block;
-	margin-top: 10px;
-}
-
 .plans-table{
 	width:  60%;
 	margin:  auto;
@@ -115,6 +109,14 @@ h1 {
 
 .plans-tr-hidden{
 	display: none;
+}
+
+/* Wishlist Page */
+	
+.wishlist-search{
+	width: 30%;
+	display: inline-block;
+	margin-top: 10px;
 }
 
 .wishlist-table{
