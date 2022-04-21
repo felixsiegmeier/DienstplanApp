@@ -44,13 +44,13 @@
 	<tbody>
 		<%plans.forEach(plan => { %>
 			<tr class="plans-tr" value="<%= plan._id%>">
-				<td class="plans-td">
+				<td>
 					<%= plan.name%>
 				</td>
-				<td class="plans-td">
+				<td>
 					<%= months[plan.month-1]%>
 				</td>
-				<td class="plans-td">
+				<td>
 					<%= plan.year%>
 				</td>
 				<td>
