@@ -1,0 +1,90 @@
+<!-- This page shows a single Plan for Editing and starting the auto-fill
+    ejs variables: plan, doctors, wishLists, wishlist
+ -->
+<%- include("header") -%>
+<%const week = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"]%>
+<h1>Dienstplan</h1>
+<h2><%= plan.name%> - <%= plan.month%>/<%= plan.year%></h2>
+
+<h1><%= plan.days.length%></h1>
+
+<table class="table table-bordered plan-table">
+    <thead>
+        <tr>
+            <th>Datum</th>
+            <th>Wochentag</th>
+            <th>NFA</th>
+            <th>Haus</th>
+            <th>IMC</th>
+            <th>Notarzt</th>
+            <th>RTH</th>
+        </tr>
+    </thead>
+    <tbody>
+        <%plan.days.forEach(day => {%>
+            <tr <%if(day.noWorkingDay){%>class="table-secondary" <%}%>>
+                <td><%= day.date.getDate()%></td>
+                <td><%= week[day.date.getDay()]%></td>
+                <td><a tabindex="0" class="popover-toggle" data-toggle="popover" data-placement="bottom" data-title="" data-container="body" data-date="<%= day.date.getDate()%>"></a></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+
+            <div id="popover-content-<%= day.date.getDate()%>" class="hide">
+                <select class="form-select new-plan-form-select" aria-label="Default select example" name="em">
+                    <option value="0"> </option>
+                    <%doctors.forEach(doctor => {%>
+                        <%if(doctor.emergencyDepartment){%>
+                            <%wishList.wishes.forEach(wish => {%>
+                                <%if(wish.doctorId === String(doctor._id)){%>
+                                    <% if(!wish.noDutyWish.includes(day.date.getDate())){ %>
+                                        <%console.log(wish.noDutyWish)%>
+                                        <%console.log(day.date.getDate())%>
+                                        <%console.log("--------------")%>
+                                        <option value="<%= doctor._id%>"><%= doctor.name%></option>
+                                    <%}%>
+                                <%}%>
+                            <%})%>
+                        <%}%>
+                    <%})%>
+                </select>
+            </div>
+        <%})%>
+
+    </tbody>
+
+
+</table>
+
+
+
+<select class="form-select plan-wish-select" data-planId="<%= plan._id%>">
+    <%if (wishList){%>
+        <option value="<%= wishList._id%>"><%= wishList.name%></option>
+    <%}else{ %>
+        <option value="0">Wunschliste auswählen</option>
+    <%}%>
+    <%wishLists.forEach(wishLi => { %>
+        <option value="<%= wishLi._id%>"><%= wishLi.name%></option>
+    <% })%>
+</select>
+<br>
+<br>
+<button class="btn btn-info">Wünsche eintragen</button>
+<br>
+<br>
+<button class="btn btn-warning">Automatisch auffüllen</button>
+<br>
+<br>
+<button class="btn btn-success">Speichern</button>
+
+
+
+<%- include("footer") -%>
+
+
+
+

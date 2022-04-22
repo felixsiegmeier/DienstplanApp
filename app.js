@@ -322,6 +322,45 @@ app.post("/wish", (req, res) => {
 	})
 })
 
+////////////////////////////////////////////// Plan = Single Plan Page //////////////////////////////////////////////
+
+app.get("/plan", (req, res) => {
+	Plan.findById(req.query.id)
+	.then(plan => {
+		Doctor.find()
+		.then(doctors => {
+				if(plan.wishListId){
+					WishList.findById(plan.wishListId)
+					.then(wishList => {
+						WishList.find()
+						.then(wishLists => {
+							res.render("plan", {plan: plan, doctors: doctors, wishLists: wishLists, wishList: wishList})
+						})
+					})
+				}else{
+					WishList.find()
+					.then(wishLists => {
+						res.render("plan", {plan: plan, doctors: doctors, wishLists: wishLists, wishList: false})
+					})
+				}
+			})
+		})
+	})
+
+app.post("/plan", (req, res) => {
+	const update = req.query.update
+	const data = req.body
+
+	if(update === "wishList"){
+		Plan.findByIdAndUpdate(data.planId, {wishListId: data.wishListId}, () => {
+			res.sendStatus(200)
+		})
+	}
+
+	
+})
+
+
 ///////////////////////////////////////////// Testing plan-creation //////////////////////////////////////
 // WishList.find((err, wL) => {
 // 	Doctor.find((err, docs) => {

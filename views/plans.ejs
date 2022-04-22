@@ -1,6 +1,6 @@
-// This page shows a list of all plans.
-// This page allows to create a new plan.
-
+<!-- This page shows a list of all plans.
+This page allows to create a new plan.
+ -->
 <%- include("header") -%>
 
 <h1>Alle Pläne</h1>
@@ -44,13 +44,13 @@
 	<tbody>
 		<%plans.forEach(plan => { %>
 			<tr class="plans-tr" value="<%= plan._id%>">
-				<td>
+				<td class="plans-td">
 					<%= plan.name%>
 				</td>
-				<td>
+				<td class="plans-td">
 					<%= months[plan.month-1]%>
 				</td>
-				<td>
+				<td class="plans-td">
 					<%= plan.year%>
 				</td>
 				<td>

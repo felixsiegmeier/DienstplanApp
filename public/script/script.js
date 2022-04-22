@@ -147,10 +147,28 @@ $(".btn-save-wish").on("click", (e) => {
 	})
 })
 
+$(function () {
+  $('[data-toggle="popover"]').popover({
+    html: true,
+    trigger: 'click',
+    sanitize: false,
+	content: function() {
+    	return $('#popover-content-'+$(this).attr("data-date")).html();
+    	}
+})
+})
 
-
-
-
-
+$(".plan-wish-select").on("change", (e) => {
+	const wishListId = e.currentTarget.value
+	const planId = e.currentTarget.getAttribute("data-planId")
+	$.ajax({
+		url: "/plan?update=wishList",
+		data: {wishListId: wishListId, planId: planId},
+		type: "POST",
+		success: () => {
+			window.open("/plan?id="+planId, "_self")
+		}
+	})
+})
 
 

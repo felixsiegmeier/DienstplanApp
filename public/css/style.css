@@ -1,4 +1,4 @@
-/* Global TAGS */
+/*************************************** Global TAGS ***************************************/
 
 html{
 	height: 100%;
@@ -18,7 +18,7 @@ h1 {
 	margin: 2%;
 }
 
-/* Header / Footer / global used styles */
+/*************************************** Header / Footer / global used styles ***************************************/
 
 .back-button{
 	font-size: 3rem;
@@ -34,7 +34,7 @@ h1 {
 	color: #5cb85c;
 }
 
-/* Global styling-elements */
+/*************************************** Global styling-elements ***************************************/
 
 }
 .dot { /* Separator */
@@ -55,7 +55,7 @@ h1 {
 	color:  red;
 }
 
-/* Index Page */
+/*************************************** Index Page ***************************************/
 
 .card{
 	margin: 10px auto;
@@ -78,14 +78,14 @@ h1 {
 	}
 }
 
-/* Doctors Page */
+/*************************************** Doctors Page ***************************************/
 
 form.doctors{
 	margin-right: 10%;
 	margin-left: 10%;
 }
 
-/* Plans Page */	
+/*************************************** Plans Page ***************************************/	
 
 .new-plan-form-select{
 	display: inline-block;
@@ -116,7 +116,7 @@ form.doctors{
 	display: none;
 }
 
-/* Wishlist Page */
+/*************************************** Wishlist Page ***************************************/
 	
 .wishlist-search{
 	width: 30%;
@@ -140,7 +140,7 @@ form.doctors{
 	display: none;
 }
 
-/* Wish Page */
+/*************************************** Wish Page ***************************************/
 	
 .wish-table{
 	width:  60%;
@@ -201,3 +201,39 @@ div.input-group{
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
 }
+
+/*************************************** Plan Page ***************************************/
+
+.plan-wish-select{
+	display: inline-block;
+	text-align: center;
+	width:  200px;
+	margin-top: 10px;
+}
+
+.plan-table{
+	width:  70%;
+	height: 100%;
+	margin:  auto;
+	margin-top: 20px;
+	cursor: pointer;
+}
+
+/*.popover {max-width:280px;}*/
+
+.hide{display: none;}
+
+.popover-toggle{
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.my-form-control{
+	width: 200px;
+}
+
+
+
+
+
