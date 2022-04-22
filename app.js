@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const express = require("express")
 const ejs = require("ejs")
 const schemas = require(__dirname+"/schemas.js")
+const planCreation = require(__dirname+"/plancreation.js")
 const https = require("https")
 
 app = express()
@@ -167,7 +168,7 @@ app.get("/plans", (req, res) => {
 	
 })
 
-app.post("/plans", (req, res) => { /creates a new Plan in DB and redirects to it's page
+app.post("/plans", (req, res) => { //creates a new Plan in DB and redirects to it's page
 	const newPlan = new Plan({
 		name: req.body.name,
 		year: req.body.year,
@@ -262,7 +263,6 @@ app.route("/wishlist")
 app.get("/wish",(req, res) => {
 	WishList.findOne({_id: req.query.id}, (err, wishList) => {
 		if (wishList){
-			console.log(wishList)
 			const wishes = wishList.wishes
 			const doctorsWithWishes = wishes.map((wish) => wish.doctorId)
 			Doctor.find((err, doctors) => {
@@ -280,6 +280,7 @@ app.get("/wish",(req, res) => {
 				if (!err){
 					freeDaysOfMonth(wishList.year, wishList.month)
 					.then((freeDays) => {
+						console.log(wishList.wishes)
 						res.render("wish", {wishList: wishList, monthLength: monthLength, freeDays: freeDays})
 					})
 					
@@ -291,9 +292,51 @@ app.get("/wish",(req, res) => {
 	})
 })
 
+app.post("/wish", (req, res) => {
+	wishListId = req.query.id
+	wishUpdate = req.body
+	WishList.findById(wishListId)
+	.then(wishList => {
+		const wishes = wishList.wishes
+		wishes.forEach(wish => {
+			const dutyWishUpdateList = []
+			const noDutyWishUpdateList = []
+
+			wishUpdate[wish.doctorId].dutyWish.forEach(update => {
+				date = parseInt(update)
+				if(date != 0){
+					dutyWishUpdateList.push(date)
+				}
+				wish.dutyWish = dutyWishUpdateList
+			})
+
+			wishUpdate[wish.doctorId].noDutyWish.forEach(update => {
+				date = parseInt(update)
+				if(date != 0){
+					noDutyWishUpdateList.push(date)
+				}
+				wish.noDutyWish = noDutyWishUpdateList
+			})
+		})
+		WishList.findByIdAndUpdate(wishListId, {wishes: wishes}, () => {res.sendStatus(200);})
+	})
+})
+
+///////////////////////////////////////////// Testing plan-creation //////////////////////////////////////
+// WishList.find((err, wL) => {
+// 	Doctor.find((err, docs) => {
+// 		Plan.find((err, p) => {
+// 			planCreation.generatePlan(p[0], wL[1].wishes, docs)
+// 		})
+// 	})
+// })
+
 
 ////////////////////////////////////////////// Server call //////////////////////////////////////////////
 
 app.listen(3000, () => {
 	console.log("Server up and running")
 })
+
+
+

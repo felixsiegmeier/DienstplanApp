@@ -33,14 +33,14 @@ exports.Day = Day = new mongoose.Schema({
 	imc: String,
 	emergencyDoctor: String,
 	rescueHelicopter: String,
-	clinics = Clinic
+	clinics : Clinic
 })
 
 exports.Wish = Wish = new mongoose.Schema({
 	doctorId: String,
 	doctorName: String,
-	dutyWish: [Date],
-	noDutyWish: [Date]
+	dutyWish: [Number],
+	noDutyWish: [Number]
 })
 
 exports.WishList = WishList = new mongoose.Schema({

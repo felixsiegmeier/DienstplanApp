@@ -112,22 +112,24 @@ $(".wish").on("click", (e) => {
 })
 
 // saves the entire wish-matrix
-// currently only creating a json-string. This must be sent to the app/database
-$(".btn-save-wish").on("click", () => {
+$(".btn-save-wish").on("click", (e) => {
+	const wishListId = $(e.currentTarget).attr("value")
 	const wishMatrix = {}
 	$(".wish").each(function(){
 		const doctorId = $(this).attr("data-doctor-id")
 		const date = $(this).attr("data-date")
+		const month = $(this).attr("data-month")
+		const year = $(this).attr("data-year")
 		const value = $(this).attr("value")
 		
 		if(!wishMatrix[doctorId]){
 			wishMatrix[doctorId] = {}
 		}
 		if(!wishMatrix[doctorId].dutyWish){
-			wishMatrix[doctorId].dutyWish = []
+			wishMatrix[doctorId].dutyWish = [0]
 		}
 		if(!wishMatrix[doctorId].noDutyWish){
-			wishMatrix[doctorId].noDutyWish = []
+			wishMatrix[doctorId].noDutyWish = [0]
 		}
 
 		if(value === "1"){
@@ -137,7 +139,12 @@ $(".btn-save-wish").on("click", () => {
 			wishMatrix[doctorId].noDutyWish.push(Number(date))
 		}
 	})
-	console.log(wishMatrix)
+	$.ajax({
+		type: "POST",
+		url: "/wish?id="+wishListId,
+		data: wishMatrix,
+		dataType: "json"
+	})
 })
 
 
