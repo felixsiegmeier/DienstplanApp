@@ -219,7 +219,7 @@ app.post("/plans", (req, res) => { //creates a new Plan in DB and redirects to i
 			newPlan.days.push(newDay)
 		})
 		newPlan.save(() => {
-			res.redirect("/plan/"+newPlan._id)
+			res.redirect("/plan?id="+newPlan._id)
 		})
 	})
 })
@@ -280,7 +280,6 @@ app.get("/wish",(req, res) => {
 				if (!err){
 					freeDaysOfMonth(wishList.year, wishList.month)
 					.then((freeDays) => {
-						console.log(wishList.wishes)
 						res.render("wish", {wishList: wishList, monthLength: monthLength, freeDays: freeDays})
 					})
 					
@@ -329,18 +328,61 @@ app.get("/plan", (req, res) => {
 	.then(plan => {
 		Doctor.find()
 		.then(doctors => {
-				if(plan.wishListId){
+				if(plan.wishListId){ // only of there is a wishlish attached to the plan
 					WishList.findById(plan.wishListId)
 					.then(wishList => {
 						WishList.find()
 						.then(wishLists => {
-							res.render("plan", {plan: plan, doctors: doctors, wishLists: wishLists, wishList: wishList})
+
+							// Object "available" which contains the id and name of the wishlist of the selected plan
+							// attributes for each day of the plan will be added later in the code
+							const available ={}
+							available.name = wishList.name
+							available.id = String(wishList._id)
+
+							// vor every day in plan create an Object with lists of the available doctors for that day and duty
+							plan.days.forEach(day => {
+								dutyDay = {}
+								dutyDay.date = day.date.getDate()
+								dutyDay.emergencyDepartment = []
+								dutyDay.house = []
+
+								doctors.forEach(doctor => {
+									if(doctor.emergencyDepartment){
+										dutyDay.emergencyDepartment.push([String(doctor._id), doctor.name])
+									}
+									if(doctor.house){
+										dutyDay.house.push([String(doctor._id), doctor.name])
+									}
+								})
+
+								// If doctors are listed in wishlist for noDutyWish, remove them form the available-list for that day
+								wishList.wishes.forEach(wish => {
+									if(wish.noDutyWish.includes(dutyDay.date)){
+
+										for(var i = 0; i < dutyDay.emergencyDepartment.length; i++){
+											if(dutyDay.emergencyDepartment[i][0] == wish.doctorId){
+												dutyDay.emergencyDepartment.splice(i, 1)
+											}
+										}
+										for(var i = 0; i < dutyDay.house.length; i++){
+											if(dutyDay.house[i][0] == wish.doctorId){
+												dutyDay.house.splice(i, 1)
+											}
+										}
+									}
+								})
+
+								// create the attribute of available for the particular day
+								available[dutyDay.date] = dutyDay
+							})
+							res.render("plan", {plan: plan, doctors: doctors, wishLists: wishLists, available: available})
 						})
 					})
 				}else{
 					WishList.find()
 					.then(wishLists => {
-						res.render("plan", {plan: plan, doctors: doctors, wishLists: wishLists, wishList: false})
+						res.render("plan", {plan: plan, doctors: doctors, wishLists: wishLists, available: false})
 					})
 				}
 			})
@@ -370,6 +412,10 @@ app.post("/plan", (req, res) => {
 // 	})
 // })
 
+app.post("/test", (req, res) => {
+	console.log(req.params)
+	res.sendStatus(200)
+})
 
 ////////////////////////////////////////////// Server call //////////////////////////////////////////////
 

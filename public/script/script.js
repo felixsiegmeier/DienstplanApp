@@ -152,10 +152,10 @@ $(function () {
     html: true,
     trigger: 'click',
     sanitize: false,
-	content: function() {
-    	return $('#popover-content-'+$(this).attr("data-date")).html();
-    	}
-})
+		content: function() {
+			return $('#popover-content-'+$(this).attr("data-date")).html();
+		}
+	})
 })
 
 $(".plan-wish-select").on("change", (e) => {
@@ -171,4 +171,18 @@ $(".plan-wish-select").on("change", (e) => {
 	})
 })
 
+$(".popover-btn").on("click", (e) => {
+	console.log(e.currentTarget).attr("data-date")
+})
+
+$(document).on('click','.popover-btn',function(){
+    $('[data-toggle="popover"]').popover("hide")
+});
+
+ $(document).on('change', 'select', function() {
+    doctorName = $(this).find(":selected").text()
+    doctorId = $(this).find(":selected").val()
+    console.log(doctorName)
+    console.log(doctorId)
+  });
 
