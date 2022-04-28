@@ -147,6 +147,7 @@ $(".btn-save-wish").on("click", (e) => {
 	})
 })
 
+// toggles popover for doctor-selection on plan-page
 $(function () {
   $('[data-toggle="popover"]').popover({
     html: true,
@@ -158,6 +159,7 @@ $(function () {
 	})
 })
 
+// changes the wishlist for the selected plan on plan-page via select-menu
 $(".plan-wish-select").on("change", (e) => {
 	const wishListId = e.currentTarget.value
 	const planId = e.currentTarget.getAttribute("data-planId")
@@ -171,16 +173,19 @@ $(".plan-wish-select").on("change", (e) => {
 	})
 })
 
+// makes the "close"-btn in popover on plan-page close the popover (currently closing all open popups)
 $(document).on('click','.popover-btn',function(){
     $('[data-toggle="popover"]').popover("hide")
 });
 
+// makes the selection from popover in plan-page be displayed in the plan 
+// and the doctors _ids saved as data-doctorid of the containing span
  $(document).on('change', 'select', function() {
-    doctorName = $(this).find(":selected").text()
-    doctorId = $(this).find(":selected").val()
-    duty = $(this).attr("id").split("-")[0] // house || emergencyDepartment
-    position = parseInt($(this).attr("id").split("-")[1]) // 1 || 2
-    date = parseInt($(this).attr("id").split("-")[2]) // 1 ... 31
+    const doctorName = $(this).find(":selected").text()
+    const doctorId = $(this).find(":selected").val()
+    const duty = $(this).attr("id").split("-")[0] // house || emergencyDepartment
+    const position = parseInt($(this).attr("id").split("-")[1]) // 1 || 2
+    const date = parseInt($(this).attr("id").split("-")[2]) // 1 ... 31
     targetField = $("[data-duty='"+duty+"-"+date+"']") // e.g. data-duty = "emergencyDepartement-13"
     if(position == 1){
     	targetField.find(":nth-child(1)").text(doctorName)
@@ -191,4 +196,44 @@ $(document).on('click','.popover-btn',function(){
     	targetField.find(":nth-child(2)").attr("data-doctorid", doctorId)
     }
   });
+
+// Button to save plan and reload page
+ $(".btn-save-plan").on("click", (e) => {
+ 	const plan = $(e.currentTarget).data("plan-id")
+ 	const planDays = $(e.currentTarget).data("plan-days")
+ 	const days = []
+ 	// hier muss dann für jede Zeile (i=0; i<days; i++) ausgelesen und day {} erzeugt werden
+ 	for(i=0; i<planDays; i++){
+ 		const day = {}
+ 		const emergencyDepartment1 = $('[data-duty="emergencyDepartment-'+(i+1)+'"]').find(':nth-child(1)').data("doctorid")
+ 		const emergencyDepartment2 = $('[data-duty="emergencyDepartment-'+(i+1)+'"]').find(':nth-child(2)').data("doctorid")
+ 		day.emergecyDepartment = [emergencyDepartment1, emergencyDepartment2]
+
+ 		const house1 = $('[data-duty="house-'+(i+1)+'"]').find(':nth-child(1)').data("doctorid")
+ 		const house2 = $('[data-duty="house-'+(i+1)+'"]').find(':nth-child(2)').data("doctorid")
+ 		day.house = [house1, house2]
+
+ 		// hier noch die anderen Reihen
+
+ 		days.push(day)
+ 	}
+ 	console.log(days)
+ })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

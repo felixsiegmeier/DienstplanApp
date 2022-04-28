@@ -18,7 +18,7 @@ Clinic = new mongoose.Schema({
 		type: Number,
 		default: 0
 	}
-})
+}) 
 
 exports.Day = Day = new mongoose.Schema({
 	date: Date,

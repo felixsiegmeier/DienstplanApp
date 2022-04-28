@@ -17,7 +17,7 @@
             <th>Notarzt</th>
             <th>RTH</th>
         </tr>
-    </thead>
+    </thead> 
     <tbody>
         <%plan.days.forEach(day => {%>
             <tr <%if(day.noWorkingDay){%>class="table-secondary" <%}%>>
@@ -98,7 +98,7 @@
 <button class="btn btn-warning">Automatisch auffüllen</button>
 <br>
 <br>
-<button class="btn btn-success">Speichern</button>
+<button class="btn btn-success btn-save-plan" data-plan-id="<%= plan._id%>" data-plan-days="<%= plan.days.length%>">Speichern</button>
 
 
 
