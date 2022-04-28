@@ -23,24 +23,23 @@
             <tr <%if(day.noWorkingDay){%>class="table-secondary" <%}%>>
                 <td><%= day.date.getDate()%></td>
                 <td><%= week[day.date.getDay()]%></td>
-                <td><a tabindex="0" class="popover-toggle" data-toggle="popover" data-placement="bottom" data-title="" data-container="body" data-date="<%= day.date.getDate()%>"></a></td>
-                <td></td>
+                <td><a tabindex="0" class="popover-toggle" data-toggle="popover" data-placement="bottom" data-title="" data-container="body" data-duty="emergencyDepartment-<%= day.date.getDate()%>"><span data-doctorId=""></span><span data-doctorId=""></span></a></td>
+                <td><a tabindex="0" class="popover-toggle" data-toggle="popover" data-placement="bottom" data-title="" data-container="body" data-duty="house-<%= day.date.getDate()%>"><span data-doctorId=""></span><span data-doctorId=""></span></a></td>
                 <td></td>
                 <td></td>
                 <td></td>
             </tr>
 
             <%if(available){%>
-            <div id="popover-content-<%= day.date.getDate()%>" class="hide">
-                <form id="myform" class="form-inline" role="form">
+            <div id="popover-content-emergencyDepartment-<%= day.date.getDate()%>" class="hide">
                 <p>select two for shared duty</p>
-                <select id="emergency-department-first-<%= day.date.getDate()%>" class="form-select new-plan-form-select">
+                <select id="emergencyDepartment-1-<%= day.date.getDate()%>" class="form-select new-plan-form-select">
                     <option value="0" selected> </option>
                     <%available[String(day.date.getDate())].emergencyDepartment.forEach(doctor => {%>  
                         <option value="<%= doctor[0]%>"><%= doctor[1]%></option>
                     <%})%>
                 </select>
-                <select id="emergency-department-second-<%= day.date.getDate()%>" class="form-select new-plan-form-select">
+                <select id="emergencyDepartment-2-<%= day.date.getDate()%>" class="form-select new-plan-form-select">
                     <option value="0"> </option>
                     <%available[String(day.date.getDate())].emergencyDepartment.forEach(doctor => {%>  
                         <option value="<%= doctor[0]%>"><%= doctor[1]%></option>
@@ -48,8 +47,26 @@
                 </select>
                 <br>
                 <br>
-            <button type="submit" data-duty="emergency-department" data-date="<%= day.date.getDate()%>" class="bnt btn-success popover-btn" >OK</button>
-        </form>
+            <button class="bnt btn-warning popover-btn" >Schließen</button>
+            </div>
+
+            <div id="popover-content-house-<%= day.date.getDate()%>" class="hide">
+                <p>select two for shared duty</p>
+                <select id="house-1-<%= day.date.getDate()%>" class="form-select new-plan-form-select">
+                    <option value="0" selected> </option>
+                    <%available[String(day.date.getDate())].house.forEach(doctor => {%>  
+                        <option value="<%= doctor[0]%>"><%= doctor[1]%></option>
+                    <%})%>
+                </select>
+                <select id="house-2-<%= day.date.getDate()%>" class="form-select new-plan-form-select">
+                    <option value="0"> </option>
+                    <%available[String(day.date.getDate())].house.forEach(doctor => {%>  
+                        <option value="<%= doctor[0]%>"><%= doctor[1]%></option>
+                    <%})%>
+                </select>
+                <br>
+                <br>
+            <button class="bnt btn-warning popover-btn" >Schließen</button>
             </div>
             <%}%>
         <%})%>

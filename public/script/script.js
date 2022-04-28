@@ -153,7 +153,7 @@ $(function () {
     trigger: 'click',
     sanitize: false,
 		content: function() {
-			return $('#popover-content-'+$(this).attr("data-date")).html();
+			return $('#popover-content-'+$(this).attr("data-duty")).html();
 		}
 	})
 })
@@ -171,10 +171,6 @@ $(".plan-wish-select").on("change", (e) => {
 	})
 })
 
-$(".popover-btn").on("click", (e) => {
-	console.log(e.currentTarget).attr("data-date")
-})
-
 $(document).on('click','.popover-btn',function(){
     $('[data-toggle="popover"]').popover("hide")
 });
@@ -182,7 +178,17 @@ $(document).on('click','.popover-btn',function(){
  $(document).on('change', 'select', function() {
     doctorName = $(this).find(":selected").text()
     doctorId = $(this).find(":selected").val()
-    console.log(doctorName)
-    console.log(doctorId)
+    duty = $(this).attr("id").split("-")[0] // house || emergencyDepartment
+    position = parseInt($(this).attr("id").split("-")[1]) // 1 || 2
+    date = parseInt($(this).attr("id").split("-")[2]) // 1 ... 31
+    targetField = $("[data-duty='"+duty+"-"+date+"']") // e.g. data-duty = "emergencyDepartement-13"
+    if(position == 1){
+    	targetField.find(":nth-child(1)").text(doctorName)
+    	targetField.find(":nth-child(1)").attr("data-doctorid", doctorId)
+    }
+    if(position == 2){
+    	targetField.find(":nth-child(2)").text("/"+doctorName)
+    	targetField.find(":nth-child(2)").attr("data-doctorid", doctorId)
+    }
   });
 
