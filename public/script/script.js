@@ -180,7 +180,7 @@ $(document).on('click','.popover-btn',function(){
 
 // makes the selection from popover in plan-page be displayed in the plan 
 // and the doctors _ids saved as data-doctorid of the containing span
- $(document).on('change', 'select', function() {
+ $(document).on('change', 'select.emDOrHouse', function() {
     const doctorName = $(this).find(":selected").text()
     const doctorId = $(this).find(":selected").val()
     const duty = $(this).attr("id").split("-")[0] // house || emergencyDepartment
@@ -199,7 +199,7 @@ $(document).on('click','.popover-btn',function(){
 
 // Button to save plan and reload page
  $(".btn-save-plan").on("click", (e) => {
- 	const plan = $(e.currentTarget).data("plan-id")
+ 	const planId = $(e.currentTarget).data("plan-id")
  	const planDays = $(e.currentTarget).data("plan-days")
  	const days = []
  	// hier muss dann für jede Zeile (i=0; i<days; i++) ausgelesen und day {} erzeugt werden
@@ -213,13 +213,33 @@ $(document).on('click','.popover-btn',function(){
  		const house2 = $('[data-duty="house-'+(i+1)+'"]').find(':nth-child(2)').data("doctorid")
  		day.house = [house1, house2]
 
+ 		const imc = $('select#imc-'+(i+1)).find(":selected").text()
+ 		day.imc = imc
+
+ 		const emergencyDoctor = $('select#emergencyDoctor-'+(i+1)).find(":selected").text()
+ 		day.emergencyDoctor = emergencyDoctor
+
+ 		const rescueHelicopter = $('select#rescueHelicopter-'+(i+1)).find(":selected").text()
+ 		day.rescueHelicopter = rescueHelicopter
+
  		// hier noch die anderen Reihen
 
  		days.push(day)
  	}
  	console.log(days)
+ 	const data = {}
+ 	data.id = planId
+ 	data.days = days
+ 	$.ajax({
+		type: "POST",
+		url: "/plan?update=plan-"+planId,
+		data: data,
+		dataType: "json",
+		success: () => {
+			// window.open("/plan?id="+planId, "_self")
+		}
+	})
  })
-
 
 
 

@@ -399,6 +399,11 @@ app.post("/plan", (req, res) => {
 		})
 	}
 
+	if(update.startsWith("plan")){
+		console.log(req.body)
+		res.sendStatus(200)
+	}
+
 	
 })
 
