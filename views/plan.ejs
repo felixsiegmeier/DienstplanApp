@@ -20,7 +20,8 @@
     </thead> 
     <tbody>
         <%plan.days.forEach(day => {%>
-            <tr <%if(day.noWorkingDay){%>class="table-secondary" <%}%> data-date="<%= day.date.getDate()%>" data-id="<%= day._id%>">
+
+            <tr <%if(day.noWorkingDay){%>class="table-secondary" <%}%>>
                 <td><%= day.date.getDate()%></td>
                 <td><%= week[day.date.getDay()]%></td>
                 <td><a tabindex="0" class="popover-toggle" data-toggle="popover" data-placement="bottom" data-title="" data-container="body" data-duty="emergencyDepartment-<%= day.date.getDate()%>"><span data-doctorId=""></span><span data-doctorId=""></span></a></td>

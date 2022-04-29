@@ -201,38 +201,39 @@ $(document).on('click','.popover-btn',function(){
  $(".btn-save-plan").on("click", (e) => {
  	const planId = $(e.currentTarget).data("plan-id")
  	const planDays = $(e.currentTarget).data("plan-days")
- 	const days = {}
+ 	const days = []
  	// hier muss dann für jede Zeile (i=0; i<days; i++) ausgelesen und day {} erzeugt werden
  	for(i=0; i<planDays; i++){
-
- 		const dayId = $('[data-date="'+(i+1)+'"]').attr("data-id")
- 		days[dayId] = {}
-
+ 		const day = {}
  		const emergencyDepartment1 = $('[data-duty="emergencyDepartment-'+(i+1)+'"]').find(':nth-child(1)').data("doctorid")
  		const emergencyDepartment2 = $('[data-duty="emergencyDepartment-'+(i+1)+'"]').find(':nth-child(2)').data("doctorid")
- 		days[dayId].emergecyDepartment = [emergencyDepartment1, emergencyDepartment2]
+ 		day.emergecyDepartment = [emergencyDepartment1, emergencyDepartment2]
 
  		const house1 = $('[data-duty="house-'+(i+1)+'"]').find(':nth-child(1)').data("doctorid")
  		const house2 = $('[data-duty="house-'+(i+1)+'"]').find(':nth-child(2)').data("doctorid")
- 		days[dayId].house = [house1, house2]
+ 		day.house = [house1, house2]
 
  		const imc = $('select#imc-'+(i+1)).find(":selected").text()
- 		days[dayId].imc = imc
+ 		day.imc = imc
 
  		const emergencyDoctor = $('select#emergencyDoctor-'+(i+1)).find(":selected").text()
- 		days[dayId].emergencyDoctor = emergencyDoctor
+ 		day.emergencyDoctor = emergencyDoctor
 
  		const rescueHelicopter = $('select#rescueHelicopter-'+(i+1)).find(":selected").text()
- 		days[dayId].rescueHelicopter = rescueHelicopter
+ 		day.rescueHelicopter = rescueHelicopter
 
  		// hier noch die anderen Reihen
 
+ 		days.push(day)
  	}
  	console.log(days)
+ 	const data = {}
+ 	data.id = planId
+ 	data.days = days
  	$.ajax({
 		type: "POST",
 		url: "/plan?update=plan-"+planId,
-		data: days,
+		data: data,
 		dataType: "json",
 		success: () => {
 			// window.open("/plan?id="+planId, "_self")

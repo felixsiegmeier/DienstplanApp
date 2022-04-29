@@ -400,21 +400,7 @@ app.post("/plan", (req, res) => {
 	}
 
 	if(update.startsWith("plan")){
-		plan = req.body
-		console.log(plan)
-		for(id in plan){
-			console.log(plan[id].emergecyDepartment)
-			Day.findByIdAndUpdate(id, {emergencyDepartment: ["Felix", "Dominik"]}, (err) =>{
-				if(err){
-					console.log(err)
-				}else{
-					console.log("successfully updated")
-				}
-			})
-		}
-		Day.find((err, days) => {
-			console.log(days)
-		})
+		console.log(req.body)
 		res.sendStatus(200)
 	}
 
