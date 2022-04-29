@@ -17,17 +17,17 @@
 				<td class="grid-td" value="<%= wish.doctorId%>"><%= wish.doctorName%></td>
 				<% for(i = 0; i < monthLength; i++){ %>
 					<%if (wish.dutyWish.includes(i+1)){%>
-						<td class="grid-td <%if(freeDays.includes(i+1)){%>grid-no-working-day<%}%>"><div class="wish wish-duty-wish" data-doctor-id="<%= wish.doctorId%>" data-date="<%= i+1 %>" value="1"><%= i+1%></div></td>
+						<td class="grid-td <%if(freeDays.includes(i+1)){%>grid-no-working-day<%}%>"><div class="wish wish-duty-wish" data-doctor-id="<%= wish.doctorId%>" data-date="<%= i+1 %>" value="1"><p class="unselectable"><%= i+1%></p></td>
 					<%}else if (wish.noDutyWish.includes(i+1)){%>
-						<td class="grid-td <%if(freeDays.includes(i+1)){%>grid-no-working-day<%}%>"><div class="wish wish-no-duty-wish" data-doctor-id="<%= wish.doctorId%>" data-date="<%= i+1 %>" value="2"><%= i+1%></div></td>
+						<td class="grid-td <%if(freeDays.includes(i+1)){%>grid-no-working-day<%}%>"><div class="wish wish-no-duty-wish" data-doctor-id="<%= wish.doctorId%>" data-date="<%= i+1 %>" value="2"><p class="unselectable"><%= i+1%></p></div></td>
 					<%}else{%>
-						<td class="grid-td <%if(freeDays.includes(i+1)){%>grid-no-working-day<%}%>"><div class="wish wish-normal" data-doctor-id="<%= wish.doctorId%>" data-date="<%= i+1 %>" value="0"><%= i+1%></div></td>
+						<td class="grid-td <%if(freeDays.includes(i+1)){%>grid-no-working-day<%}%>"><div class="wish wish-normal" data-doctor-id="<%= wish.doctorId%>" data-date="<%= i+1 %>" value="0"><p class="unselectable"><%= i+1%></p></div></td>
 					<%}%>
 				<%}%>
 			</tr>
 		<%})%>
 	</tbody>
 </table>
-<button class="btn btn-success btn-save-wish">Speichern</button>
+<button class="btn btn-success btn-save-wish" value="<%= wishList._id %>">Speichern</button>
 
 <%- include("footer") -%>

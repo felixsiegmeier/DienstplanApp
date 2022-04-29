@@ -1,0 +1,133 @@
+<!-- This page shows a single Plan for Editing and starting the auto-fill
+    ejs variables: plan, doctors, wishLists, available
+ -->
+<%- include("header") -%>
+<%const week = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"]%>
+<h1>Dienstplan</h1>
+<h2><%= plan.name%> - <%= plan.month%>/<%= plan.year%></h2>
+
+<table class="table table-bordered plan-table">
+    <thead>
+        <tr>
+            <th>Datum</th>
+            <th>Wochentag</th>
+            <th>NFA</th>
+            <th>Haus</th>
+            <th>IMC</th>
+            <th>Notarzt</th>
+            <th>RTH</th>
+        </tr>
+    </thead> 
+    <tbody>
+        <%plan.days.forEach(day => {%>
+            <tr <%if(day.noWorkingDay){%>class="table-secondary" <%}%> data-date="<%= day.date.getDate()%>" data-id="<%= day._id%>">
+                <td><%= day.date.getDate()%></td>
+                <td><%= week[day.date.getDay()]%></td>
+                <td><a tabindex="0" class="popover-toggle" data-toggle="popover" data-placement="bottom" data-title="" data-container="body" data-duty="emergencyDepartment-<%= day.date.getDate()%>"><span data-doctorId=""></span><span data-doctorId=""></span></a></td>
+                <td><a tabindex="0" class="popover-toggle" data-toggle="popover" data-placement="bottom" data-title="" data-container="body" data-duty="house-<%= day.date.getDate()%>"><span data-doctorId=""></span><span data-doctorId=""></span></a></td>
+                <td>
+                    <select class="form-select" id="imc-<%= day.date.getDate()%>">
+                        <option value="0"></option>
+                        <%for(doctor of doctors){%>
+                            <%if(doctor.imc){%>
+                                <option value="<%= doctor._id%>"><%=doctor.name%></option>
+                            <%}%>
+                        <%}%>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-select" id="emergencyDoctor-<%= day.date.getDate()%>">
+                        <option value="0"></option>
+                        <%for(doctor of doctors){%>
+                            <%if(doctor.emergencyDoctor){%>
+                                <option value="<%= doctor._id%>"><%=doctor.name%></option>
+                            <%}%>
+                        <%}%>
+                    </select>
+                </td>
+                <td>
+                    <select class="form-select" id="rescueHelicopter-<%= day.date.getDate()%>">
+                        <option value="0"></option>
+                        <%for(doctor of doctors){%>
+                            <%if(doctor.rescueHelicopter){%>
+                                <option value="<%= doctor._id%>"><%=doctor.name%></option>
+                            <%}%>
+                        <%}%>
+                    </select>
+                </td>
+            </tr>
+
+            <%if(available){%>
+            <div id="popover-content-emergencyDepartment-<%= day.date.getDate()%>" class="hide">
+                <p>select two for shared duty</p>
+                <select id="emergencyDepartment-1-<%= day.date.getDate()%>" class="form-select new-plan-form-select emDOrHouse">
+                    <option value="0" selected> </option>
+                    <%available[String(day.date.getDate())].emergencyDepartment.forEach(doctor => {%>  
+                        <option value="<%= doctor[0]%>"><%= doctor[1]%></option>
+                    <%})%>
+                </select>
+                <select id="emergencyDepartment-2-<%= day.date.getDate()%>" class="form-select new-plan-form-select emDOrHouse">
+                    <option value="0"> </option>
+                    <%available[String(day.date.getDate())].emergencyDepartment.forEach(doctor => {%>  
+                        <option value="<%= doctor[0]%>"><%= doctor[1]%></option>
+                    <%})%>
+                </select>
+                <br>
+                <br>
+            <button class="bnt btn-warning popover-btn" >Schließen</button>
+            </div>
+
+            <div id="popover-content-house-<%= day.date.getDate()%>" class="hide">
+                <p>select two for shared duty</p>
+                <select id="house-1-<%= day.date.getDate()%>" class="form-select new-plan-form-select emDOrHouse">
+                    <option value="0" selected> </option>
+                    <%available[String(day.date.getDate())].house.forEach(doctor => {%>  
+                        <option value="<%= doctor[0]%>"><%= doctor[1]%></option>
+                    <%})%>
+                </select>
+                <select id="house-2-<%= day.date.getDate()%>" class="form-select new-plan-form-select emDOrHouse">
+                    <option value="0"> </option>
+                    <%available[String(day.date.getDate())].house.forEach(doctor => {%>  
+                        <option value="<%= doctor[0]%>"><%= doctor[1]%></option>
+                    <%})%>
+                </select>
+                <br>
+                <br>
+            <button class="bnt btn-warning popover-btn" >Schließen</button>
+            </div>
+            <%}%>
+        <%})%>
+    </tbody>
+</table>
+
+
+
+<select class="form-select plan-wish-select" data-planId="<%= plan._id%>">
+    <%if (available){%>
+        <option value="<%= available.id%>"><%= available.name%></option>
+    <%}else{ %>
+        <option value="0">Wunschliste auswählen</option>
+    <%}%>
+    <%wishLists.forEach(wishLi => { %>
+        <% if(wishLi.year == plan.year && wishLi.month == plan.month){%>
+            <option value="<%= wishLi._id%>"><%= wishLi.name%></option>
+        <% } %>
+    <% })%>
+</select>
+<br>
+<br>
+<button class="btn btn-info">Wünsche eintragen</button>
+<br>
+<br>
+<button class="btn btn-warning">Automatisch auffüllen</button>
+<br>
+<br>
+<button class="btn btn-success btn-save-plan" data-plan-id="<%= plan._id%>" data-plan-days="<%= plan.days.length%>">Speichern</button>
+
+
+
+<%- include("footer") -%>
+
+
+
+

@@ -3,6 +3,7 @@ const mongoose = require("mongoose")
 const express = require("express")
 const ejs = require("ejs")
 const schemas = require(__dirname+"/schemas.js")
+const planCreation = require(__dirname+"/plancreation.js")
 const https = require("https")
 
 app = express()
@@ -167,7 +168,7 @@ app.get("/plans", (req, res) => {
 	
 })
 
-app.post("/plans", (req, res) => { /creates a new Plan in DB and redirects to it's page
+app.post("/plans", (req, res) => { //creates a new Plan in DB and redirects to it's page
 	const newPlan = new Plan({
 		name: req.body.name,
 		year: req.body.year,
@@ -218,7 +219,7 @@ app.post("/plans", (req, res) => { /creates a new Plan in DB and redirects to it
 			newPlan.days.push(newDay)
 		})
 		newPlan.save(() => {
-			res.redirect("/plan/"+newPlan._id)
+			res.redirect("/plan?id="+newPlan._id)
 		})
 	})
 })
@@ -262,7 +263,6 @@ app.route("/wishlist")
 app.get("/wish",(req, res) => {
 	WishList.findOne({_id: req.query.id}, (err, wishList) => {
 		if (wishList){
-			console.log(wishList)
 			const wishes = wishList.wishes
 			const doctorsWithWishes = wishes.map((wish) => wish.doctorId)
 			Doctor.find((err, doctors) => {
@@ -291,9 +291,156 @@ app.get("/wish",(req, res) => {
 	})
 })
 
+app.post("/wish", (req, res) => {
+	wishListId = req.query.id
+	wishUpdate = req.body
+	WishList.findById(wishListId)
+	.then(wishList => {
+		const wishes = wishList.wishes
+		wishes.forEach(wish => {
+			const dutyWishUpdateList = []
+			const noDutyWishUpdateList = []
+
+			wishUpdate[wish.doctorId].dutyWish.forEach(update => {
+				date = parseInt(update)
+				if(date != 0){
+					dutyWishUpdateList.push(date)
+				}
+				wish.dutyWish = dutyWishUpdateList
+			})
+
+			wishUpdate[wish.doctorId].noDutyWish.forEach(update => {
+				date = parseInt(update)
+				if(date != 0){
+					noDutyWishUpdateList.push(date)
+				}
+				wish.noDutyWish = noDutyWishUpdateList
+			})
+		})
+		WishList.findByIdAndUpdate(wishListId, {wishes: wishes}, () => {res.sendStatus(200);})
+	})
+})
+
+////////////////////////////////////////////// Plan = Single Plan Page //////////////////////////////////////////////
+
+app.get("/plan", (req, res) => {
+	Plan.findById(req.query.id)
+	.then(plan => {
+		Doctor.find()
+		.then(doctors => {
+				if(plan.wishListId){ // only of there is a wishlish attached to the plan
+					WishList.findById(plan.wishListId)
+					.then(wishList => {
+						WishList.find()
+						.then(wishLists => {
+
+							// Object "available" which contains the id and name of the wishlist of the selected plan
+							// attributes for each day of the plan will be added later in the code
+							const available ={}
+							available.name = wishList.name
+							available.id = String(wishList._id)
+
+							// vor every day in plan create an Object with lists of the available doctors for that day and duty
+							plan.days.forEach(day => {
+								dutyDay = {}
+								dutyDay.date = day.date.getDate()
+								dutyDay.emergencyDepartment = []
+								dutyDay.house = []
+
+								doctors.forEach(doctor => {
+									if(doctor.emergencyDepartment){
+										dutyDay.emergencyDepartment.push([String(doctor._id), doctor.name])
+									}
+									if(doctor.house){
+										dutyDay.house.push([String(doctor._id), doctor.name])
+									}
+								})
+
+								// If doctors are listed in wishlist for noDutyWish, remove them form the available-list for that day
+								wishList.wishes.forEach(wish => {
+									if(wish.noDutyWish.includes(dutyDay.date)){
+
+										for(var i = 0; i < dutyDay.emergencyDepartment.length; i++){
+											if(dutyDay.emergencyDepartment[i][0] == wish.doctorId){
+												dutyDay.emergencyDepartment.splice(i, 1)
+											}
+										}
+										for(var i = 0; i < dutyDay.house.length; i++){
+											if(dutyDay.house[i][0] == wish.doctorId){
+												dutyDay.house.splice(i, 1)
+											}
+										}
+									}
+								})
+
+								// create the attribute of available for the particular day
+								available[dutyDay.date] = dutyDay
+							})
+							res.render("plan", {plan: plan, doctors: doctors, wishLists: wishLists, available: available})
+						})
+					})
+				}else{
+					WishList.find()
+					.then(wishLists => {
+						res.render("plan", {plan: plan, doctors: doctors, wishLists: wishLists, available: false})
+					})
+				}
+			})
+		})
+	})
+
+app.post("/plan", (req, res) => {
+	const update = req.query.update
+	const data = req.body
+
+	if(update === "wishList"){
+		Plan.findByIdAndUpdate(data.planId, {wishListId: data.wishListId}, () => {
+			res.sendStatus(200)
+		})
+	}
+
+	if(update.startsWith("plan")){
+		plan = req.body
+		console.log(plan)
+		for(id in plan){
+			console.log(plan[id].emergecyDepartment)
+			Day.findByIdAndUpdate(id, {emergencyDepartment: ["Felix", "Dominik"]}, (err) =>{
+				if(err){
+					console.log(err)
+				}else{
+					console.log("successfully updated")
+				}
+			})
+		}
+		Day.find((err, days) => {
+			console.log(days)
+		})
+		res.sendStatus(200)
+	}
+
+	
+})
+
+
+///////////////////////////////////////////// Testing plan-creation //////////////////////////////////////
+// WishList.find((err, wL) => {
+// 	Doctor.find((err, docs) => {
+// 		Plan.find((err, p) => {
+// 			planCreation.generatePlan(p[0], wL[1].wishes, docs)
+// 		})
+// 	})
+// })
+
+app.post("/test", (req, res) => {
+	console.log(req.params)
+	res.sendStatus(200)
+})
 
 ////////////////////////////////////////////// Server call //////////////////////////////////////////////
 
 app.listen(3000, () => {
 	console.log("Server up and running")
 })
+
+
+
