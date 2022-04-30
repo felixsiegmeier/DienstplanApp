@@ -207,26 +207,24 @@ $(document).on('click','.popover-btn',function(){
  		const day = {}
  		const emergencyDepartment1 = $('[data-duty="emergencyDepartment-'+(i+1)+'"]').find(':nth-child(1)').data("doctorid")
  		const emergencyDepartment2 = $('[data-duty="emergencyDepartment-'+(i+1)+'"]').find(':nth-child(2)').data("doctorid")
- 		day.emergecyDepartment = [emergencyDepartment1, emergencyDepartment2]
+ 		day.emergencyDepartment = [emergencyDepartment1, emergencyDepartment2]
 
  		const house1 = $('[data-duty="house-'+(i+1)+'"]').find(':nth-child(1)').data("doctorid")
  		const house2 = $('[data-duty="house-'+(i+1)+'"]').find(':nth-child(2)').data("doctorid")
  		day.house = [house1, house2]
 
- 		const imc = $('select#imc-'+(i+1)).find(":selected").text()
+ 		const imc = $('select#imc-'+(i+1)).find(":selected").val()
  		day.imc = imc
 
- 		const emergencyDoctor = $('select#emergencyDoctor-'+(i+1)).find(":selected").text()
+ 		const emergencyDoctor = $('select#emergencyDoctor-'+(i+1)).find(":selected").val()
  		day.emergencyDoctor = emergencyDoctor
 
- 		const rescueHelicopter = $('select#rescueHelicopter-'+(i+1)).find(":selected").text()
+ 		const rescueHelicopter = $('select#rescueHelicopter-'+(i+1)).find(":selected").val()
  		day.rescueHelicopter = rescueHelicopter
 
- 		// hier noch die anderen Reihen
 
  		days.push(day)
  	}
- 	console.log(days)
  	const data = {}
  	data.id = planId
  	data.days = days
@@ -236,7 +234,6 @@ $(document).on('click','.popover-btn',function(){
 		data: data,
 		dataType: "json",
 		success: () => {
-			// window.open("/plan?id="+planId, "_self")
 		}
 	})
  })

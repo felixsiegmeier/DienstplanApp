@@ -11,6 +11,12 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.static("public"))
 app.set("view engine", "ejs")
 
+////////////////////////////////////////////// Routes //////////////////////////////////////////////
+
+const planRoute = require("./routes/Plan")
+app.use("/plan", planRoute)
+
+
 mongoose.connect("mongodb://localhost:27017/dienstplanDB")
 
 const Doctor = mongoose.model("Doctor", schemas.Doctor)
@@ -18,6 +24,7 @@ const Day = mongoose.model("Day", schemas.Day)
 const Plan = mongoose.model("Plan", schemas.Plan)
 const WishList = mongoose.model("WishList", schemas.WishList)
 const Wish = mongoose.model("Wish", schemas.Wish)
+const Clinic = mongoose.model("Clinic", schemas.Clinic)
 
 const doctorAttrs = ["Name", "Klinik", "NFA", "Haus", "IMC", "12 h", "Max", "NA", "RTH"]
 const clinics = ["Kardiologie", "Gastroenterologie", "Geriatrie", "Rhythmologie", "Ohne"]
@@ -75,6 +82,17 @@ function freeDaysOfMonth(year, month){ // returns a Promise, resolving an Array 
 		})
 	})
 	
+}
+
+function getDoctorClinic(id){
+	return new Promise((resolve, reject) => {
+		Doctor.findById(id, (err, doctor) => {
+			if(doctor){
+				clinic = doctor.clinic
+				resolve(clinic)
+			}
+		})
+	})
 }
 
 ////////////////////////////////////////////// main Page //////////////////////////////////////////////
@@ -216,6 +234,7 @@ app.post("/plans", (req, res) => { //creates a new Plan in DB and redirects to i
 			if (newDay.pointValue > 3){
 				newDay.pointValue = 3
 			}
+			newDay.clinics = new Clinic()
 			newPlan.days.push(newDay)
 		})
 		newPlan.save(() => {
@@ -323,90 +342,150 @@ app.post("/wish", (req, res) => {
 
 ////////////////////////////////////////////// Plan = Single Plan Page //////////////////////////////////////////////
 
-app.get("/plan", (req, res) => {
-	Plan.findById(req.query.id)
-	.then(plan => {
-		Doctor.find()
-		.then(doctors => {
-				if(plan.wishListId){ // only of there is a wishlish attached to the plan
-					WishList.findById(plan.wishListId)
-					.then(wishList => {
-						WishList.find()
-						.then(wishLists => {
+// app.get("/plan", (req, res) => {
+// 	Plan.findById(req.query.id)
+// 	.then(plan => {
+// 		Doctor.find()
+// 		.then(doctors => {
+// 				if(plan.wishListId){ // only of there is a wishlish attached to the plan
+// 					WishList.findById(plan.wishListId)
+// 					.then(wishList => {
+// 						WishList.find()
+// 						.then(wishLists => {
 
-							// Object "available" which contains the id and name of the wishlist of the selected plan
-							// attributes for each day of the plan will be added later in the code
-							const available ={}
-							available.name = wishList.name
-							available.id = String(wishList._id)
+// 							// Object "available" which contains the id and name of the wishlist of the selected plan
+// 							// attributes for each day of the plan will be added later in the code
+// 							const available ={}
+// 							available.name = wishList.name
+// 							available.id = String(wishList._id)
 
-							// vor every day in plan create an Object with lists of the available doctors for that day and duty
-							plan.days.forEach(day => {
-								dutyDay = {}
-								dutyDay.date = day.date.getDate()
-								dutyDay.emergencyDepartment = []
-								dutyDay.house = []
+// 							// vor every day in plan create an Object with lists of the available doctors for that day and duty
+// 							plan.days.forEach(day => {
+// 								dutyDay = {}
+// 								dutyDay.date = day.date.getDate()
+// 								dutyDay.emergencyDepartment = []
+// 								dutyDay.house = []
 
-								doctors.forEach(doctor => {
-									if(doctor.emergencyDepartment){
-										dutyDay.emergencyDepartment.push([String(doctor._id), doctor.name])
-									}
-									if(doctor.house){
-										dutyDay.house.push([String(doctor._id), doctor.name])
-									}
-								})
+// 								doctors.forEach(doctor => {
+// 									if(doctor.emergencyDepartment){
+// 										dutyDay.emergencyDepartment.push([String(doctor._id), doctor.name])
+// 									}
+// 									if(doctor.house){
+// 										dutyDay.house.push([String(doctor._id), doctor.name])
+// 									}
+// 								})
 
-								// If doctors are listed in wishlist for noDutyWish, remove them form the available-list for that day
-								wishList.wishes.forEach(wish => {
-									if(wish.noDutyWish.includes(dutyDay.date)){
+// 								// If doctors are listed in wishlist for noDutyWish, remove them form the available-list for that day
+// 								wishList.wishes.forEach(wish => {
+// 									if(wish.noDutyWish.includes(dutyDay.date)){
 
-										for(var i = 0; i < dutyDay.emergencyDepartment.length; i++){
-											if(dutyDay.emergencyDepartment[i][0] == wish.doctorId){
-												dutyDay.emergencyDepartment.splice(i, 1)
-											}
-										}
-										for(var i = 0; i < dutyDay.house.length; i++){
-											if(dutyDay.house[i][0] == wish.doctorId){
-												dutyDay.house.splice(i, 1)
-											}
-										}
-									}
-								})
+// 										for(var i = 0; i < dutyDay.emergencyDepartment.length; i++){
+// 											if(dutyDay.emergencyDepartment[i][0] == wish.doctorId){
+// 												dutyDay.emergencyDepartment.splice(i, 1)
+// 											}
+// 										}
+// 										for(var i = 0; i < dutyDay.house.length; i++){
+// 											if(dutyDay.house[i][0] == wish.doctorId){
+// 												dutyDay.house.splice(i, 1)
+// 											}
+// 										}
+// 									}
+// 								})
 
-								// create the attribute of available for the particular day
-								available[dutyDay.date] = dutyDay
-							})
-							res.render("plan", {plan: plan, doctors: doctors, wishLists: wishLists, available: available})
-						})
-					})
-				}else{
-					WishList.find()
-					.then(wishLists => {
-						res.render("plan", {plan: plan, doctors: doctors, wishLists: wishLists, available: false})
-					})
-				}
-			})
-		})
-	})
+// 								// create the attribute of available for the particular day
+// 								available[dutyDay.date] = dutyDay
+// 							})
+// 							res.render("plan", {plan: plan, doctors: doctors, wishLists: wishLists, available: available})
+// 						})
+// 					})
+// 				}else{
+// 					WishList.find()
+// 					.then(wishLists => {
+// 						res.render("plan", {plan: plan, doctors: doctors, wishLists: wishLists, available: false})
+// 					})
+// 				}
+// 			})
+// 		})
+// 	})
 
-app.post("/plan", (req, res) => {
-	const update = req.query.update
-	const data = req.body
+// app.post("/plan", (req, res) => {
+// 	const update = req.query.update
+// 	const data = req.body
 
-	if(update === "wishList"){
-		Plan.findByIdAndUpdate(data.planId, {wishListId: data.wishListId}, () => {
-			res.sendStatus(200)
-		})
-	}
+// 	if(update === "wishList"){
+// 		Plan.findByIdAndUpdate(data.planId, {wishListId: data.wishListId}, () => {
+// 			res.sendStatus(200)
+// 		})
+// 	}
 
-	if(update.startsWith("plan")){
-		console.log(req.body)
-		res.sendStatus(200)
-	}
+// 	if(update.startsWith("plan")){
+// 		const planId = req.body.id
+// 		const days = req.body.days
+// 		updatePlan(planId, days)
+// 		res.sendStatus(200)
+// 	}
+// })
 
+// async function updatePlan(planId, days){
+// 	const updatedPlan = await updatePlanFromPost(planId, days)
+// 	console.log(updatedPlan)
+// 	//const updatedPlanWithClinics = await updatePlanClinics(updatedPlan)
+// }
+
+// async function updatePlanFromPost(planId, days){
+// 	const plan = await Plan.findById(planId)
 	
-})
+// 	if (!plan) return
+	
+// 	for(i=0; i<days.length; i++){
+// 		plan.days[i].emergencyDepartment = days[i].emergencyDepartment
+// 		plan.days[i].house = days[i].house
+// 		plan.days[i].imc = days[i].imc
+// 		getDoctorClinic(days[i].imc)
+// 		plan.days[i].emergencyDoctor = days[i].emergencyDoctor
+// 		plan.days[i].rescueHelicopter = days[i].rescueHelicopter
+// 	}
+// 	return plan
+// }
 
+// function updatePlanClinics(plan){
+// 	return new Promise ((resolve, reject) => {
+// 		for (i=0; i<plan.days.length; i++){
+// 			console.log(i)
+// 			// plan.days[i].clinics.Kardiologie = 0
+// 			// plan.days[i].clinics.Gastroenterologie = 0
+// 			// plan.days[i].clinics.Rhythmologie = 0
+// 			// plan.days[i].clinics.Geriatrie = 0
+// 			// plan.days[i].clinics.Ohne = 0
+// 			const docs = []
+// 			docs.push(plan.days[i].emergencyDepartment[0])
+// 			docs.push(plan.days[i].emergencyDepartment[1])
+// 			docs.push(plan.days[i].house[0])
+// 			docs.push(plan.days[i].house[1])
+// 			docs.push(plan.days[i].imc)
+// 			docs.push(plan.days[i].emergencyDoctor)
+// 			if(i<plan.days.length-1){
+// 				docs.push(plan.days[i+1].rescueHelicopter)
+// 			}
+// 			j = i
+// 			for(k=0; k<docs.length; k++){
+// 				//console.log(j+" "+k)
+// 				l = k
+// 				Doctor.findById(docs[k], (err, doc) => {
+// 					console.log(l)
+// 					if(doc){
+// 						const clinic = doc.clinic
+// 						plan.days[j].clinics[clinic]++
+// 					}
+// 					if((j === plan.days.length-1) && (k === docs.length-1)){
+// 						console.log("abc")
+// 						//resolve(plan)
+// 					}
+// 				})
+// 			}
+// 		}
+// 	})
+// }
 
 ///////////////////////////////////////////// Testing plan-creation //////////////////////////////////////
 // WishList.find((err, wL) => {
